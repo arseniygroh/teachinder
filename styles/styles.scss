@@ -40,6 +40,28 @@ h2 {
     font-size: 2rem;
 }
 
+nav ul {
+    display: flex;
+    gap: 2.3rem;
+    list-style: none;
+    @media (max-width: 680px) {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+}
+
+nav a {
+    font-size: 1.4rem;
+    color: $accent;
+    transition: color $transition;
+
+    &:hover {
+      color: $hover;
+    }
+}
+
 .button {
   padding: 0.6rem 1.25rem;
   color: $accent;
@@ -125,28 +147,6 @@ h2 {
             width: 400px;
             border-color: #555;
         }
-    }
-  }
-
-  &__nav ul {
-    display: flex;
-    gap: 2.3rem;
-    list-style: none;
-    @media (max-width: 680px) {
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  &__nav a {
-    font-size: 1.4rem;
-    color: $accent;
-    transition: color $transition;
-
-    &:hover {
-      color: $hover;
     }
   }
 
@@ -472,3 +472,16 @@ h2 {
     }
 }
 
+.footer {
+    padding-block: 2rem;
+    &__container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        @media (max-width: 680px) {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+}
