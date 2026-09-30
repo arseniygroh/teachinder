@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   padding: 0px;
   margin: 0px;
@@ -311,4 +312,76 @@ body {
 }
 .top-teachers__origin {
   font-size: 0.6rem;
+}
+
+.statistics h2 {
+  text-align: center;
+  font-size: 2rem;
+}
+.statistics {
+  padding-block: 2rem;
+}
+.statistics__container::after {
+  content: "";
+  display: block;
+  width: 50%;
+  margin: 0 auto;
+  border-top: 1px solid #333;
+  margin-top: 1.5rem;
+}
+.statistics__table-wrapper {
+  overflow-x: auto;
+}
+.statistics__table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.statistics__table th,
+.statistics__table td {
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+}
+.statistics__table th:first-child,
+.statistics__table td:first-child {
+  padding-left: 1.25rem;
+  text-align: left;
+}
+.statistics__table th {
+  border-bottom: 1px solid #555;
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+.statistics__table th button {
+  padding: 0.6rem 1rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.statistics__table th:hover {
+  background-color: #f4f4f4;
+  border-bottom: 3px solid #333;
+}
+.statistics__table th:hover button::after {
+  content: " ↓";
+  color: #2a9bb0;
+}
+.statistics__table tbody tr:nth-child(even) {
+  background-color: #f7f5fa;
+}
+.statistics__pagination {
+  margin-top: 1.25rem;
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+}
+.statistics__pagination ul {
+  display: flex;
+  gap: 0.9rem;
+}
+.statistics__pagination a {
+  color: #2a9bb0;
+}
+.statistics__pagination a:hover {
+  text-decoration: underline;
 }/*# sourceMappingURL=styles.css.map */

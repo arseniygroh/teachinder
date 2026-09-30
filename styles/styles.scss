@@ -3,6 +3,7 @@
 $accent: #f4594a;
 $hover: #be3b2f;    
 $border: #b5b5b5;
+$link: #2a9bb0;
 $transition: 0.25s ease;
 
 @mixin divider {
@@ -256,4 +257,87 @@ body {
     &__origin {
         font-size: 0.6rem;
     }
-  }
+}
+
+.statistics {
+    h2 {
+        text-align: center;
+        font-size: 2rem;
+    }
+
+    padding-block: 2rem;
+  
+    &__container::after {
+      @include divider;
+      margin-top: 1.5rem;
+    }
+  
+    &__table-wrapper {
+      overflow-x: auto;
+    }
+  
+    &__table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+  
+      th,
+      td {
+        padding: 0.6rem 0.5rem;
+        text-align: center;
+      }
+  
+      th:first-child,
+      td:first-child {
+        padding-left: 1.25rem;
+        text-align: left;
+      }
+  
+      th {
+        border-bottom: 1px solid #555;
+        font-size: 1.1rem;
+        font-weight: normal;
+  
+        button {
+          padding: 0.6rem 1rem;
+          background: none;
+          border: 0;
+          cursor: pointer;
+        }
+  
+        &:hover {
+          background-color: #f4f4f4;
+          border-bottom: 3px solid #333;
+          button::after {
+            content: " \2193";
+            color: $link;
+          }
+        }
+      }
+  
+      tbody tr:nth-child(even) {
+        background-color: #f7f5fa;
+      }
+    }
+  
+    &__pagination {
+      margin-top: 1.25rem;
+      padding-left: 1.5rem;
+      font-size: 0.9rem;
+  
+      ul {
+        display: flex;
+        gap: 0.9rem;
+      }
+  
+      a {
+        color: $link;
+  
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+}
+
