@@ -19,7 +19,7 @@
                     </form>
                   </div>
                 <div class="header__bottom">
-                    <nav>
+                    <nav class="navbar">
                         <ul>
                             <li>
                                 <a href="#">Teachers</a>
@@ -35,7 +35,7 @@
                             </li>
                         </ul>
                     </nav>
-                    <button type="button" class="button header__button">Add teacher</button>
+                    <button type="button" class="button add_teacher_btn header__button">Add teacher</button>
                 </div>
             </div>
         </header>
@@ -327,7 +327,7 @@
         </main>
         <footer class="footer">
             <div class="footer__container">
-                <nav>
+                <nav class="navbar">
                     <ul>
                         <li>
                             <a href="#">Teachers</a>
@@ -343,9 +343,109 @@
                         </li>
                     </ul>
                 </nav>
-                <button type="button" class="button header__button">Add teacher</button>
+                <button type="button" class="button add_teacher_btn header__button">Add teacher</button>
             </div>
         </footer>
     </div>
+    <div class="modal" id="add-teacher-modal" aria-hidden="true">
+        <div class="modal__container">
+            <header class="modal__header">
+                <h3 class="modal__title">Add Teacher</h3>
+                <button type="button" class="modal__close" aria-label="Close modal">&times;</button>
+            </header>
+            <div class="modal__body">
+                <form class="form">
+                    <div class="form__group">
+                        <label for="add-name" class="form__label">Name</label>
+                        <input type="text" id="add-name" class="form__input" placeholder="Enter name">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-speciality" class="form__label">Speciality</label>
+                        <select id="add-speciality" class="form__select">
+                            <option value="mathematics">Mathematics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="english">English</option>
+                        </select>
+                    </div>
+                    <div class="form__row">
+                        <div class="form__group">
+                            <label for="add-country" class="form__label">Country</label>
+                            <select id="add-country" class="form__select">
+                                <option value="ukraine">Ukraine</option>
+                                <option value="usa">USA</option>
+                            </select>
+                        </div>
+                        <div class="form__group">
+                            <label for="add-city" class="form__label">City</label>
+                            <input type="text" id="add-city" class="form__input">
+                        </div>
+                    </div>
+                    <div class="form__row">
+                        <div class="form__group">
+                            <label for="add-email" class="form__label">Email</label>
+                            <input type="email" id="add-email" class="form__input">
+                        </div>
+                        <div class="form__group">
+                            <label for="add-phone" class="form__label">Phone</label>
+                            <input type="tel" id="add-phone" class="form__input">
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="add-dob" class="form__label">Date of birth</label>
+                        <input type="date" id="add-dob" class="form__input">
+                    </div>
+                    <div class="form__row form__row--align-center">
+                        <div class="form__group form__group--inline">
+                            <span class="form__label">Sex</span>
+                            <label class="form__radio-label">
+                                <input type="radio" name="sex" value="male"> Male
+                            </label>
+                            <label class="form__radio-label">
+                                <input type="radio" name="sex" value="female"> Female
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form__group form__group--inline">
+                        <label for="add-color" class="form__label">Background color</label>
+                        <input type="color" id="add-color" class="form__color" value="#ffffff">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-notes" class="form__label">Notes (optional)</label>
+                        <textarea id="add-notes" class="form__textarea" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="button button--large button--outline-primary">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="teacher-info-modal" aria-hidden="true">
+        <div class="modal__container">
+            <header class="modal__header">
+                <h3 class="modal__title">Teacher Info</h3>
+                <button type="button" class="modal__close" aria-label="Close modal">&times;</button>
+            </header>
+            <div class="modal__body teacher-profile">
+                <div class="teacher-profile__header">
+                    <img src="images/teacher.avif" alt="" class="teacher-profile__image">
+                    <div class="teacher-profile__details">
+                        <div class="teacher-profile__title-wrapper">
+                            <h2 class="teacher-profile__name">Ihor Tkachuk</h2>
+                            <button type="button" class="teacher-profile__favorite" aria-label="Add to favorites">&#9734;</button>
+                        </div>
+                        <p class="teacher-profile__subject">Chemistry</p>
+                        <p class="teacher-profile__location">Kyiv, Ukraine</p>
+                        <p class="teacher-profile__demographics">35, Male</p>
+                        <a href="mailto:ihor_tkachuk@domain.com" class="teacher-profile__email">ihor_tkachuk@domain.com</a>
+                        <p class="teacher-profile__phone">+380964993252</p>
+                    </div>
+                </div>
+                <div class="teacher-profile__about">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab autem consectetur culpa cumque, distinctio dolor dolore dolorem doloremque ea explicabo facilis nam nesciunt nisi pariatur perspiciatis porro quis similique temporibus veniam veritatis? A ab ad, aliquam amet consequatur cupiditate debitis deserunt doloribus dolorum earum eius eos minus nostrum odit omnis perferendis...</p>
+                </div>
+                <a href="#" class="teacher-profile__map-toggle">toggle map</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js" defer></script>
 </body>
 </html>

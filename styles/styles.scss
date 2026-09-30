@@ -40,7 +40,7 @@ h2 {
     font-size: 2rem;
 }
 
-nav ul {
+.navbar ul {
     display: flex;
     gap: 2.3rem;
     list-style: none;
@@ -52,7 +52,7 @@ nav ul {
     }
 }
 
-nav a {
+.navbar a {
     font-size: 1.4rem;
     color: $accent;
     transition: color $transition;
@@ -348,6 +348,7 @@ nav a {
     align-items: center;
     row-gap: 1.5rem;
     text-align: center;
+    cursor: pointer;
   
     img {
       max-width: 155px;
@@ -482,6 +483,256 @@ nav a {
         @media (max-width: 680px) {
             flex-direction: column;
             gap: 1rem;
+        }
+    }
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $transition, visibility $transition;
+
+    &.is-open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &__container {
+        background-color: #fff;
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding-inline: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    &__header {
+        background-color: #4b4b4b;
+        color: #fff;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: normal;
+    }
+
+    &__close {
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color $transition;
+
+        &:hover {
+            color: $accent;
+        }
+    }
+
+    &__body {
+        padding: 1.5rem 2rem;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    &__row {
+        display: flex;
+        gap: 1.25rem;
+
+        > .form__group {
+            flex: 1;
+        }
+
+        &--align-center {
+            align-items: center;
+        }
+    }
+
+    &__group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        &--inline {
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+
+    &__label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    &__input,
+    &__select,
+    &__textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid $border;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color $transition;
+
+        &:focus {
+            outline: none;
+            border-color: $accent;
+        }
+    }
+
+    &__textarea {
+        resize: vertical;
+    }
+
+    &__radio-label {
+        font-size: 0.9rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+
+        input[type="radio"] {
+            accent-color: $accent;
+        }
+    }
+
+    &__color {
+        padding: 0;
+        border: none;
+        width: 40px;
+        height: 30px;
+        cursor: pointer;
+    }
+}
+
+.button {
+    &--large {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-top: 1rem;
+    }
+}
+
+
+.teacher-profile {
+    &__header {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        @media (max-width: 467px) {
+            flex-direction: column;
+            align-items: center;
+            
+        }
+    }
+
+    &__image {
+        width: 160px;
+        height: 160px;
+        object-fit: cover;
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
+    &__title-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #333;
+    }
+
+    &__favorite {
+        background: transparent;
+        border: none;
+        font-size: 2rem;
+        color: #f9d74c; 
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: transform $transition;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+
+    &__subject {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    &__location,
+    &__demographics,
+    &__phone {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    &__email {
+        font-size: 0.85rem;
+        color: $link;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &__about {
+        p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #444;
+            margin: 0 0 1rem 0;
+        }
+    }
+
+    &__map-toggle {
+        font-size: 0.85rem;
+        color: $link;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
         }
     }
 }
