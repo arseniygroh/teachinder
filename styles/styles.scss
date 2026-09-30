@@ -35,6 +35,11 @@ body {
   padding: 0 15px;
 }
 
+h2 {
+    text-align: center;
+    font-size: 2rem;
+}
+
 .button {
   padding: 0.6rem 1.25rem;
   font: inherit;
@@ -61,7 +66,7 @@ body {
 
     &::after {
       @include divider;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
   }
 
@@ -159,12 +164,8 @@ body {
         row-gap: 35px;
         &::after {
             @include divider;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
-    }
-    h2 {
-        text-align: center;
-        font-size: 2rem;
     }
 
     &__filters {
@@ -225,51 +226,52 @@ body {
         gap: 1rem;
     }
 
-    &__card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        row-gap: 1.5rem;
-        text-align: center;
-        img {
-            max-width: 155px;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            border: 2px solid $accent;
-            display: block;
-            object-fit: cover;
-            overflow: hidden;
-        }
-    }
-    &__name {
-        font-size: 1.5rem;
-        &:not(:last-child) {
-            margin-bottom: 0.6rem;
-        }
-    }
-    &__subject {
-        font-size: 0.85rem;
-        color: #666;
-        &:not(:last-child) {
-            margin-bottom: 0.45rem;
-        }
-    }
-    &__origin {
-        font-size: 0.6rem;
-    }
+    // &__card {
+    //     display: flex;
+    //     flex-direction: column;
+    //     align-items: center;
+    //     row-gap: 1.5rem;
+    //     text-align: center;
+    //     img {
+    //         max-width: 155px;
+    //         aspect-ratio: 1;
+    //         border-radius: 50%;
+    //         border: 2px solid $accent;
+    //         display: block;
+    //         object-fit: cover;
+    //         overflow: hidden;
+    //     }
+    // }
+    // &__name {
+    //     font-size: 1.5rem;
+    //     &:not(:last-child) {
+    //         margin-bottom: 0.6rem;
+    //     }
+    // }
+    // &__subject {
+    //     font-size: 0.85rem;
+    //     color: #666;
+    //     &:not(:last-child) {
+    //         margin-bottom: 0.45rem;
+    //     }
+    // }
+    // &__origin {
+    //     font-size: 0.6rem;
+    // }
 }
 
 .statistics {
-    h2 {
-        text-align: center;
-        font-size: 2rem;
-    }
-
     padding-block: 2rem;
   
+    &__container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.8rem;
+    }
+
     &__container::after {
       @include divider;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
   
     &__table-wrapper {
@@ -338,6 +340,114 @@ body {
           text-decoration: underline;
         }
       }
+    }
+}
+
+.teacher-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 1.5rem;
+    text-align: center;
+  
+    img {
+      max-width: 155px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 2px solid $accent;
+      display: block;
+      object-fit: cover;
+      overflow: hidden;
+    }
+  
+    &__name {
+      font-size: 1.5rem;
+  
+      &:not(:last-child) {
+        margin-bottom: 0.6rem;
+      }
+    }
+  
+    &__subject {
+      font-size: 0.85rem;
+      color: #666;
+  
+      &:not(:last-child) {
+        margin-bottom: 0.45rem;
+      }
+    }
+  
+    &__origin {
+      font-size: 0.6rem;
+    }
+}
+  
+.favorites {
+    --visible: 5;
+    --gap: 1rem;
+    padding-block: 2rem;
+  
+    &__container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.8rem;
+    }
+
+    &__container::after {
+      @include divider;
+      margin-top: 2rem;
+    }
+  
+    &__carousel {
+        display: flex;
+        gap: var(--gap);
+        margin: 0 2.5rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        anchor-name: --favorites;
+    
+        @supports selector(::scroll-button(*)) {
+            scrollbar-width: none;
+        }
+  
+        &::scroll-button(*) {
+            position: absolute;
+            position-anchor: --favorites;
+            top: anchor(center);
+            translate: 0 -50%;
+            width: 2rem;
+            height: 2rem;
+            background: url("../images/arrow.svg") center / contain no-repeat;
+            border: 0;
+            cursor: pointer;
+            transition: opacity $transition;
+        }
+
+        &::scroll-button(left) {
+            right: anchor(left);
+            content: "" / "Scroll left";
+            rotate: 180deg;              
+        }
+
+        &::scroll-button(right) {
+            left: anchor(right);
+            content: "" / "Scroll right";
+        }
+  
+        &::scroll-button(*):disabled {
+            opacity: 0.3;
+            cursor: default;
+        }
+    }
+  
+    &__item {
+      flex: 0 0 calc((100% - (var(--visible) - 1) * var(--gap)) / var(--visible));
+      scroll-snap-align: start;
+    }
+  
+    @media (max-width: 700px) {
+      --visible: 2;
     }
 }
 
