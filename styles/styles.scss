@@ -1,6 +1,7 @@
 @import "./null";
 
-$accent: #f4594a;    
+$accent: #f4594a;
+$hover: #be3b2f;    
 $border: #b5b5b5;
 $transition: 0.25s ease;
 
@@ -137,11 +138,10 @@ body {
   &__nav a {
     font-size: 1.4rem;
     color: $accent;
-    text-decoration: none;
-    transition: opacity $transition;
+    transition: color $transition;
 
     &:hover {
-      opacity: 0.7;
+      color: $hover;
     }
   }
 
@@ -150,3 +150,110 @@ body {
     padding: 0.75rem 1.5rem;
   }
 }
+
+.top-teachers {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 35px;
+        &::after {
+            @include divider;
+            margin-top: 1.5rem;
+        }
+    }
+    h2 {
+        text-align: center;
+        font-size: 2rem;
+    }
+
+    &__filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      row-gap: 0.75rem;
+    }
+  
+    &__filter {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-inline: 1.25rem;
+        font-size: 0.9rem;
+    
+        &:first-child {
+            padding-left: 0;
+        }
+    
+        &:last-child {
+            padding-right: 0;
+        }
+    
+        & + & {
+            border-left: 1px dashed $border;
+        }
+    
+        label {
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #999;
+            cursor: pointer;
+        }
+    
+        select {
+            padding: 0.25rem;
+            font: inherit;
+            color: #222;
+            background-color: #fff;
+            border: 1px solid $border;
+            cursor: pointer;
+        }
+    
+        input[type="checkbox"] {
+            width: max-content;
+            margin: 0;
+            accent-color: $accent;
+            cursor: pointer;
+        }
+    }
+
+    &__cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(155px, 100%), 1fr));
+        gap: 1rem;
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 1.5rem;
+        text-align: center;
+        img {
+            max-width: 155px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 2px solid $accent;
+            display: block;
+            object-fit: cover;
+            overflow: hidden;
+        }
+    }
+    &__name {
+        font-size: 1.5rem;
+        &:not(:last-child) {
+            margin-bottom: 0.6rem;
+        }
+    }
+    &__subject {
+        font-size: 0.85rem;
+        color: #666;
+        &:not(:last-child) {
+            margin-bottom: 0.45rem;
+        }
+    }
+    &__origin {
+        font-size: 0.6rem;
+    }
+  }
