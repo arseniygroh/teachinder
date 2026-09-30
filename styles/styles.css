@@ -108,7 +108,6 @@ h2 {
 
 .button {
   padding: 0.6rem 1.25rem;
-  font: inherit;
   color: #f4594a;
   background-color: transparent;
   border: 1px solid #f4594a;
@@ -454,4 +453,26 @@ h2 {
   .favorites {
     --visible: 2;
   }
+}
+
+.about__container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.8rem;
+}
+.about__container::after {
+  content: "";
+  display: block;
+  width: 50%;
+  margin: 0 auto;
+  border-top: 1px solid #333;
+  margin-top: 2rem;
+}
+.about__text > p:not(:last-child) {
+  margin-bottom: 1rem;
+}
+.about__text {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #666;
 }/*# sourceMappingURL=styles.css.map */
