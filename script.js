@@ -2073,6 +2073,13 @@ function searchUsers(users, query) {
 
 console.log(searchUsers(users, "Vi"));
 
+function percentage(total, matched) {
+  return total.length === 0 ? 0 : Math.round((matched.length / total.length) * 100);
+}
+
+console.log(percentage(users, searchUsers(users, "Vi")));
+console.log(percentage(users, filterUsers(users, {minAge: 30})));
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
