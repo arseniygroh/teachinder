@@ -2026,7 +2026,31 @@ function filterUsers(users, {country, age, gender, favorite} = {}) {
 
 console.log(filterUsers(users, {country: "United States"}));
 
+function sortUsers(users, {field, order = "asc"} = {}) {
+  const comparators = {
+    full_name: (a, b) => a.localeCompare(b),
+    country: (a, b) => a.localeCompare(b),
+    age: (a, b) => a - b,
+    b_date: (a, b) => Date.parse(a) - Date.parse(b),
+  };
 
+  const compare = comparators[field];
+  if (!compare || !["asc", "desc"].includes(order)) return [...users];
+
+  const direction = order === "desc" ? -1 : 1;
+
+  return [...users].sort((a, b) => {
+    const x = a[field];
+    const y = b[field];
+    if (x == null && y == null) return 0;
+    if (x == null) return 1;
+    if (y == null) return -1;
+    return direction * compare(x, y);
+  });
+}
+
+
+console.log(sortUsers(users, {field: "full_name", order: "asc"}));
 
 
 
