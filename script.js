@@ -2009,9 +2009,23 @@ function validateUser(user) {
 const users = normalizeUsers(randomUserMock);
 
 const report = users
-  .map(u => ({ name: u.full_name, errors: validateUser(u) }))
+  .map(u => ({name: u.full_name, errors: validateUser(u)}))
   .filter(r => r.errors.length);
 console.log(report);
+
+
+function filterUsers(users, {country, age, gender, favorite} = {}) {
+  return users.filter(u => {
+    if (country != null && u.country?.toLowerCase() !== country.toLowerCase()) return false;
+    if (age != null && u.age !== age) return false;
+    if (gender != null && u.gender?.toLowerCase() !== gender.toLowerCase()) return false;
+    if (favorite != null && u.favorite !== favorite) return false;
+    return true;
+  });
+}
+
+console.log(filterUsers(users, {country: "United States"}));
+
 
 
 
