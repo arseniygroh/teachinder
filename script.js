@@ -2053,6 +2053,25 @@ function sortUsers(users, {field, order = "asc"} = {}) {
 console.log(sortUsers(users, {field: "full_name", order: "asc"}));
 
 
+function searchUsers(users, query) {
+  if (query == null) return [];
+  const text = String(query).trim();
+  if (text === "") return [];
+
+  if (/^\d+$/.test(text)) {
+    const age = Number(text);
+    return users.filter(u => u.age === age);
+  }
+
+  const lower = text.toLowerCase();
+  return users.filter(u =>
+    u.full_name?.toLowerCase().includes(lower) ||
+    u.note?.toLowerCase().includes(lower)
+  );
+}
+
+console.log(searchUsers(users, "Vi"));
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
