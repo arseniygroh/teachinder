@@ -2014,10 +2014,11 @@ const report = users
 console.log(report);
 
 
-function filterUsers(users, {country, age, gender, favorite} = {}) {
+function filterUsers(users, {country, gender, favorite, minAge, maxAge} = {}) {
   return users.filter(u => {
     if (country != null && u.country?.toLowerCase() !== country.toLowerCase()) return false;
-    if (age != null && u.age !== age) return false;
+    if (minAge != null && !(u.age >= minAge)) return false;
+    if (maxAge != null && !(u.age <= maxAge)) return false;
     if (gender != null && u.gender?.toLowerCase() !== gender.toLowerCase()) return false;
     if (favorite != null && u.favorite !== favorite) return false;
     return true;
