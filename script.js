@@ -1881,7 +1881,7 @@ function generateRandomCourse() {
 function fillFields(user) {
     return {
       ...user,
-      id: user.id ?? crypto.randomUUID(),
+      id: user.id ?? new Date().getTime(),
       favorite: typeof user.favorite === "boolean" ? user.favorite : Math.random() < 0.5,
       course: courses.find(c => c.toLowerCase() === user.course?.toLowerCase()) ?? generateRandomCourse(),
       bg_color: user.bg_color ?? `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, "0")}`,
@@ -1925,9 +1925,93 @@ function normalizeUsers(users) {
     return [...unique.values()];
 }
 
+const dashed3 = /^\d{3}-\d{3}-\d{4}$/;      
+const parens = /^\(\d{3}\)-\d{3}-\d{4}$/;
 
+const phoneFormats = {
+  Australia: /^\d{2}-\d{4}-\d{4}$/,
+  Canada: dashed3,
+  Denmark: /^\d{8}$/,
+  Finland: /^\d{2}-\d{3}-\d{3}$/,
+  France: /^\d{2}(-\d{2}){4}$/,
+  Germany: /^\d{4}-\d{7}$/,
+  Iran: /^\d{3}-\d{8}$/,
+  Ireland: dashed3,
+  Netherlands: parens,
+  "New Zealand": parens,
+  Norway: /^\d{8}$/,
+  Spain: /^\d{3}-\d{3}-\d{3}$/,
+  Switzerland: /^\d{3} \d{3} \d{2} \d{2}$/,
+  Turkey: parens,
+  "United States": parens,
+};
 
+function isCapitalized(value) {
+  return /^\p{Lu}/u.test(value);
+}
 
+function isValidString(value) {
+  return typeof value === "string" && value.trim() !== "";
+}
+
+function isValidPhone(phone, country) {
+  if (typeof phone !== "string") return false;
+  const format = phoneFormats[country];
+  return format ? format.test(phone) : false;
+}
+
+function validateUser(user) {
+    const errors = [];
+    if (!isValidString(user.full_name)) {
+        errors.push("Full name is required and must be a non-empty string");
+    } else {
+        const nameParts = user.full_name.trim().split(' ');
+        if (nameParts.length < 2) {
+            errors.push("Full name must contain first name and a last name");
+        }
+        if (!isCapitalized(user.full_name.trim())) {
+            errors.push("Full name must be properly capitalized.");
+        }
+    }
+
+    if (!isValidString(user.gender) || !isCapitalized(user.gender)) {
+        errors.push("Gender is required and must be either male or female and must be properly capitalized.");
+    }
+    if (!isValidString(user.state) || !isCapitalized(user.state)) {
+        errors.push("State is required and must be properly capitalized.");
+    }
+    if (!isValidString(user.city) || !isCapitalized(user.city)) {
+        errors.push("City is required and must be properly capitalized.");
+    }
+    if (!isValidString(user.country) || !isCapitalized(user.country)) {
+        errors.push("Country is required and must be properly capitalized.");
+    }
+
+    if (typeof user.note === "string" && user.note.trim() !== "" && !isCapitalized(user.note)) {
+        errors.push("Note must be properly capitalized if provided.");
+    }
+
+    if (!Number.isFinite(user.age) || user.age < 0) {
+        errors.push("Age is required and must be a non-negative number.");
+    }
+
+    if (!isValidPhone(user.phone, user.country)) {
+        errors.push(`Phone number is required and must match the format for ${user.country}.`);
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+        errors.push("A valid email address is required.");
+    }
+    
+    return errors;
+}
+
+const users = normalizeUsers(randomUserMock);
+
+const report = users
+  .map(u => ({ name: u.full_name, errors: validateUser(u) }))
+  .filter(r => r.errors.length);
+console.log(report);
 
 
 
