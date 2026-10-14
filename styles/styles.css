@@ -282,6 +282,16 @@ h2 {
   grid-template-columns: repeat(auto-fill, minmax(min(155px, 100%), 1fr));
   gap: 1rem;
 }
+.top-teachers__btns {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.7rem;
+  align-items: center;
+}
+.top-teachers__btns button {
+  width: 100%;
+  max-width: 200px;
+}
 
 .statistics {
   padding-block: 2rem;
@@ -365,7 +375,7 @@ h2 {
   cursor: pointer;
 }
 .teacher-card img {
-  max-width: 155px;
+  min-width: 155px;
   aspect-ratio: 1;
   border-radius: 50%;
   border: 2px solid #f4594a;
@@ -389,6 +399,17 @@ h2 {
 }
 .teacher-card__origin {
   font-size: 0.6rem;
+}
+.teacher-card__initials {
+  width: 155px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid #f4594a;
+  color: #f4594a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
 }
 
 .favorites {

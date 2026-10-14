@@ -1884,7 +1884,7 @@ function fillFields(user) {
       id: user.id ?? new Date().getTime(),
       favorite: typeof user.favorite === "boolean" ? user.favorite : Math.random() < 0.5,
       course: courses.find(c => c.toLowerCase() === user.course?.toLowerCase()) ?? generateRandomCourse(),
-      bg_color: user.bg_color ?? `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, "0")}`,
+      bg_color: user.bg_color ?? `#fff`,
       note: user.note ?? "",
     };
 }
@@ -1969,7 +1969,8 @@ function validateUser(user) {
         if (nameParts.length < 2) {
             errors.push("Full name must contain first name and a last name");
         }
-        if (!isCapitalized(user.full_name.trim())) {
+        const isProperlyCapitalized = nameParts.every(part => isCapitalized(part));
+        if (!isProperlyCapitalized) {
             errors.push("Full name must be properly capitalized.");
         }
     }
@@ -2006,13 +2007,6 @@ function validateUser(user) {
     return errors;
 }
 
-const users = normalizeUsers(randomUserMock);
-
-const report = users
-  .map(u => ({name: u.full_name, errors: validateUser(u)}))
-  .filter(r => r.errors.length);
-console.log(report);
-
 
 function filterUsers(users, {country, gender, favorite, minAge, maxAge} = {}) {
   return users.filter(u => {
@@ -2025,7 +2019,7 @@ function filterUsers(users, {country, gender, favorite, minAge, maxAge} = {}) {
   });
 }
 
-console.log(filterUsers(users, {country: "United States"}));
+
 
 function sortUsers(users, {field, order = "asc"} = {}) {
   const comparators = {
@@ -2051,9 +2045,6 @@ function sortUsers(users, {field, order = "asc"} = {}) {
 }
 
 
-console.log(sortUsers(users, {field: "full_name", order: "asc"}));
-
-
 function searchUsers(users, query) {
   if (query == null) return [];
   const text = String(query).trim();
@@ -2071,24 +2062,85 @@ function searchUsers(users, query) {
   );
 }
 
-console.log(searchUsers(users, "Vi"));
+
 
 function percentage(total, matched) {
   return total.length === 0 ? 0 : Math.round((matched.length / total.length) * 100);
 }
 
-console.log(percentage(users, searchUsers(users, "Vi")));
-console.log(percentage(users, filterUsers(users, {minAge: 30})));
-
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    const teachers = normalizeUsers(randomUserMock);
     const addTeacherBtns = document.querySelectorAll('.add_teacher_btn');
     const teacherCards = document.querySelectorAll('.teacher-card');
     const addTeacherModal = document.getElementById('add-teacher-modal');
     const teacherInfoModal = document.getElementById('teacher-info-modal');
     const closeAddTeacherModalBtn = addTeacherModal.querySelector('.modal__close');
     const closeTeacherInfoModalBtn = teacherInfoModal.querySelector('.modal__close');
+
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadLessBtn = document.getElementById('load-less-btn');
+
+    const PAGE_SIZE = 10;
+    let shown = 0;
+
+    function renderTeacherCards(teachers, low, high) {
+      const container = document.querySelector('.top-teachers__cards');
+      teachers.slice(low, high).forEach(teacher => {
+        const [first, ...rest] = teacher.full_name.split(' ');
+        const last = rest.join(' ');
+        const initials = [first, last].map(p => p[0]).join('.');
+
+        const card = document.createElement('article');
+        card.className = 'teacher-card';
+        card.innerHTML = `
+          ${teacher.picture_large
+            ? `<img src="${teacher.picture_large}" alt="">`
+            : `<div class="teacher-card__initials">${initials}</div>`}
+          <div class="teacher-card__info">
+            <div class="teacher-card__name">${first}${last ? `<br>${last}` : ''}</div>
+            <div class="teacher-card__subject">${teacher.course ?? 'Unknown'}</div>
+            <div class="teacher-card__origin">${teacher.country ?? 'Unknown'}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    renderTeacherCards(teachers, shown, PAGE_SIZE);
+    shown += 10;
+
+    function showMore() {
+      renderTeacherCards(teachers, shown, shown + PAGE_SIZE);
+      shown = Math.min(shown + PAGE_SIZE, teachers.length);
+      if (shown >= teachers.length) {
+        loadMoreBtn.style.display = 'none';
+      } else if (shown > PAGE_SIZE) {
+        loadMoreBtn.style.display = 'block';
+        loadLessBtn.style.display = 'block';
+      }
+    }
+
+    function showLess() {
+      const container = document.querySelector('.top-teachers__cards');
+      let right = container.children.length - 1;
+      for (let i = 0; i < PAGE_SIZE && right >= PAGE_SIZE; i++, right--) {
+        container.removeChild(container.children[right]);
+      }
+      shown = Math.max(shown - PAGE_SIZE, PAGE_SIZE);
+      if (shown <= PAGE_SIZE) {
+        loadLessBtn.style.display = 'none';
+        loadMoreBtn.style.display = 'block';
+      } else {
+        loadLessBtn.style.display = 'block';
+        loadMoreBtn.style.display = 'block';
+      }
+    }
+
+    loadMoreBtn.addEventListener('click', showMore);
+    loadLessBtn.addEventListener('click', showLess);
+
     addTeacherBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             addTeacherModal.classList.add("is-open");

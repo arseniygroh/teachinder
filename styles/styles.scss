@@ -225,6 +225,18 @@ h2 {
         gap: 1rem;
     }
 
+    &__btns {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.7rem;
+      align-items: center;
+
+      button {
+        width: 100%;
+        max-width: 200px;
+      }
+    }
+
     // &__card {
     //     display: flex;
     //     flex-direction: column;
@@ -351,7 +363,7 @@ h2 {
     cursor: pointer;
   
     img {
-      max-width: 155px;
+      min-width: 155px;
       aspect-ratio: 1;
       border-radius: 50%;
       border: 2px solid $accent;
@@ -379,6 +391,18 @@ h2 {
   
     &__origin {
       font-size: 0.6rem;
+    }
+
+    &__initials {
+      width: 155px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 2px solid $accent;
+      color: $accent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
     }
 }
   
