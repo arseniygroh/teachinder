@@ -2008,13 +2008,14 @@ function validateUser(user) {
 }
 
 
-function filterUsers(users, {country, gender, favorite, minAge, maxAge} = {}) {
+function filterUsers(users, {country, gender, favorite, minAge, maxAge, photo} = {}) {
   return users.filter(u => {
-    if (country != null && u.country?.toLowerCase() !== country.toLowerCase()) return false;
+    if ((country != null && country !== "") && u.country?.toLowerCase() !== country.toLowerCase()) return false;
     if (minAge != null && !(u.age >= minAge)) return false;
     if (maxAge != null && !(u.age <= maxAge)) return false;
     if (gender != null && u.gender?.toLowerCase() !== gender.toLowerCase()) return false;
-    if (favorite != null && u.favorite !== favorite) return false;
+    if (photo && !u.picture_large) return false;
+    if (favorite && u.favorite !== favorite) return false;
     return true;
   });
 }
@@ -2077,13 +2078,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const addTeacherModal = document.getElementById('add-teacher-modal');
     const teacherInfoModal = document.getElementById('teacher-info-modal');
     const closeAddTeacherModalBtn = addTeacherModal.querySelector('.modal__close');
-    
-
+    const filters = document.querySelector(".top-teachers__filters");
     const loadMoreBtn = document.getElementById('load-more-btn');
     const loadLessBtn = document.getElementById('load-less-btn');
 
     const PAGE_SIZE = 10;
     let shown = 0;
+    let visibleTeachers = teachers
+
+    function createCountryFilter() {
+      const countries = [...new Set(teachers.map(t => t.country).filter(Boolean))].sort();
+      return `
+        <select name="country" id="filter-region">
+          ${`<option value="">All Countries</option>` + countries.map(c => `<option value="${c}">${c}</option>`).join('')}
+        </select>
+      `;
+    }
 
     function createTeacherCard(teacher) {
       const [first, ...rest] = teacher.full_name.split(" ");
@@ -2111,6 +2121,13 @@ document.addEventListener('DOMContentLoaded', function() {
       teachers.slice(low, high).forEach(t => container.appendChild(createTeacherCard(t)));
     }
 
+    function rerenderTeacherCards(teachers) {
+      document.querySelector(".top-teachers__cards").replaceChildren();
+      visibleTeachers = teachers;
+      shown = 0;
+      showMore();
+    }
+
     function renderFavorites() {
       const list = document.querySelector(".favorites__carousel");
       list.replaceChildren(
@@ -2123,14 +2140,21 @@ document.addEventListener('DOMContentLoaded', function() {
       );
     }
 
+    filters.children[1].innerHTML = `
+      <div class="top-teachers__filter">
+        <label for="filter-region">Region</label>
+        ${createCountryFilter()}
+      </div>
+    `;
+
     renderFavorites();
-    renderTeacherCards(teachers, shown, PAGE_SIZE);
-    shown += 10;
+    showMore();
 
     function showMore() {
-      renderTeacherCards(teachers, shown, shown + PAGE_SIZE);
-      shown = Math.min(shown + PAGE_SIZE, teachers.length);
-      if (shown >= teachers.length) {
+      renderTeacherCards(visibleTeachers, shown, shown + PAGE_SIZE);
+      shown = Math.min(shown + PAGE_SIZE, visibleTeachers.length);
+
+      if (shown >= visibleTeachers.length) {
         loadMoreBtn.style.display = 'none';
       } else if (shown > PAGE_SIZE) {
         loadMoreBtn.style.display = 'block';
@@ -2168,10 +2192,41 @@ document.addEventListener('DOMContentLoaded', function() {
         addTeacherModal.classList.remove("is-open");
         addTeacherModal.setAttribute("aria-hidden", "true");
     });
+
+    const filterQueries = {};
+
+    filters.addEventListener("change", e => {
+      const select = e.target.closest("select");
+      const checkbox = e.target.closest("input[type='checkbox']");
+      if (select) {
+          if (select.name === "age") {
+            let minAge;
+            let maxAge;
+            if (select.value.includes("-")) {
+              const parts = select.value.split("-");
+              minAge = Number(parts[0]);
+              maxAge = Number(parts[1]);
+            } else minAge = 61;
+
+            if (minAge) filterQueries.minAge = minAge;
+            if (maxAge) filterQueries.maxAge = maxAge;
+          } else {
+            filterQueries[select.name] = select.value;
+          } 
+      }
+      if (checkbox) {
+        filterQueries[checkbox.name] = checkbox.checked;
+      }
+      console.log(filterQueries);
+      const filteredTeachers = filterUsers(teachers, filterQueries);
+      console.log(filteredTeachers);
+      
+      rerenderTeacherCards(filteredTeachers);
+    });
     
     document.querySelector("main").addEventListener("click", e => {
       const target = e.target;
-      const card = target.closest(".teacher-card"); 
+      const card = target.closest(".teacher-card");
       if (card) {
         
         const teacher = teachers.find(t => t.id === card.id);
@@ -2238,7 +2293,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
           renderFavorites();
         });
-
       }
     });
 });
