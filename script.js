@@ -1902,7 +1902,7 @@ function normalizeUsers(users) {
         timezone: user.location.timezone,
         email: user.email,
         b_date: user.dob.date,
-        age: user.dob.age,
+        age: user.dob.age || (new Date().getFullYear() - new Date(user.dob.date).getFullYear()),
         phone: user.phone,
         picture_large: user.picture.large,
         picture_thumbnail: user.picture.thumbnail,
@@ -2077,7 +2077,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addTeacherModal = document.getElementById('add-teacher-modal');
     const teacherInfoModal = document.getElementById('teacher-info-modal');
     const closeAddTeacherModalBtn = addTeacherModal.querySelector('.modal__close');
-    const closeTeacherInfoModalBtn = teacherInfoModal.querySelector('.modal__close');
+    
 
     const loadMoreBtn = document.getElementById('load-more-btn');
     const loadLessBtn = document.getElementById('load-less-btn');
@@ -2093,6 +2093,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const initials = [first, last].map(p => p[0]).join('.');
 
         const card = document.createElement('article');
+        card.id = teacher.id;
         card.className = 'teacher-card';
         card.innerHTML = `
           ${teacher.picture_large
@@ -2152,16 +2153,65 @@ document.addEventListener('DOMContentLoaded', function() {
         addTeacherModal.classList.remove("is-open");
         addTeacherModal.setAttribute("aria-hidden", "true");
     });
+    
+    document.querySelector("main").addEventListener("click", e => {
+      const target = e.target;
+      const card = target.closest(".teacher-card"); 
+      if (card) {
+        
+        const teacher = teachers.find(t => t.id === card.id);
+        const [first, ...rest] = teacher.full_name.split(' ');
+        const last = rest.join(' ');
+        const initials = [first, last].map(p => p[0]).join('.');
 
-    teacherCards.forEach(card => {
-        card.addEventListener('click', function() {
-            teacherInfoModal.classList.add("is-open");
-            teacherInfoModal.setAttribute("aria-hidden", "false");
+        const demographics = [teacher.age, teacher.gender].filter(v => v != null && v !== "").join(", ") || "Age and gender unknown";
+
+        const emailHtml = teacher.email
+          ? `<a href="mailto:${teacher.email}" class="teacher-profile__email">${teacher.email}</a>`
+          : `<p class="teacher-profile__email">No email provided</p>`;
+          
+        teacherInfoModal.innerHTML = `
+          <div class="modal__container">
+            <header class="modal__header">
+              <h3 class="modal__title">Teacher Info</h3>
+              <button type="button" class="modal__close" aria-label="Close modal">&times;</button>
+            </header>
+            <div class="modal__body teacher-profile">
+              <div class="teacher-profile__header">
+                ${teacher.picture_large
+                  ? `<img class="teacher-profile__image" src="${teacher.picture_large}" alt="">`
+                  : `<div class="teacher-card__initials">${initials}</div>`}
+                <div class="teacher-profile__details">
+                  <div class="teacher-profile__title-wrapper">
+                    <h2 class="teacher-profile__name">${teacher.full_name}</h2>
+                    <button type="button" class="teacher-profile__favorite" aria-label="Add to favorites">&#9734;</button>
+                  </div>
+                  <p class="teacher-profile__subject">${teacher.course ?? "Unknown subject"}</p>
+                  <p class="teacher-profile__location">${teacher.city && teacher.country ? `${teacher.city}, ${teacher.country}` : "Unknown location"}</p>
+                  <p class="teacher-profile__demographics">${demographics}</p>
+                  ${emailHtml}
+                  <p class="teacher-profile__phone">${teacher.phone ?? "Unknown phone"}</p>
+                </div>
+              </div>
+              <div class="teacher-profile__about">
+                <p>${teacher.note || "No information provided"}</p>
+              </div>
+              <a href="#" class="teacher-profile__map-toggle">toggle map</a>
+            </div>  
+          </div>
+        `;
+        teacherInfoModal.classList.add("is-open");
+        teacherInfoModal.setAttribute("aria-hidden", "false");
+
+        const closeModalBtn = teacherInfoModal.querySelector(".modal__close");
+        const addToFavoritesBtn = teacherInfoModal.querySelector(".teacher-profile__favorite");
+        
+        closeModalBtn.addEventListener("click", function() {
+          console.log("Closing teacher info modal");
+          teacherInfoModal.classList.remove("is-open");
+          teacherInfoModal.setAttribute("aria-hidden", "true");
         });
-    });
 
-    closeTeacherInfoModalBtn?.addEventListener('click', function() {
-        teacherInfoModal.classList.remove("is-open");
-        teacherInfoModal.setAttribute("aria-hidden", "true");
+      }
     });
 });
