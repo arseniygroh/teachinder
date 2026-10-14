@@ -319,13 +319,20 @@ h2 {
           cursor: pointer;
         }
   
-        &:hover {
+        &[aria-sort="ascending"],
+        &[aria-sort="descending"] {
           background-color: #f4f4f4;
           border-bottom: 3px solid #333;
-          button::after {
-            content: " \2193";
-            color: $link;
-          }
+        }
+
+        &[aria-sort="ascending"] button::after {
+          content: " \2193";
+          color: $link;
+        }
+
+        &[aria-sort="descending"] button::after {
+          content: " \2191";
+          color: $link;
         }
       }
   

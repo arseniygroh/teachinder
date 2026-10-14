@@ -2022,11 +2022,13 @@ function filterUsers(users, {country, gender, favorite, minAge, maxAge, photo} =
 
 
 
-function sortUsers(users, {field, order = "asc"} = {}) {
+function sortUsers(users, { field, order = "asc" } = {}) {
   const comparators = {
-    full_name: (a, b) => a.localeCompare(b),
-    country: (a, b) => a.localeCompare(b),
-    age: (a, b) => a - b,
+    full_name: (a, b) => String(a).localeCompare(String(b)),
+    country: (a, b) => String(a).localeCompare(String(b)),
+    gender: (a, b) => String(a).localeCompare(String(b)),
+    course: (a, b) => String(a).localeCompare(String(b)),
+    age: (a, b) => Number(a) - Number(b),
     b_date: (a, b) => Date.parse(a) - Date.parse(b),
   };
 
@@ -2038,12 +2040,24 @@ function sortUsers(users, {field, order = "asc"} = {}) {
   return [...users].sort((a, b) => {
     const x = a[field];
     const y = b[field];
+
     if (x == null && y == null) return 0;
     if (x == null) return 1;
     if (y == null) return -1;
+
+    if (field === "age" || field === "b_date") {
+      const valX = field === "age" ? Number(x) : Date.parse(x);
+      const valY = field === "age" ? Number(y) : Date.parse(y);
+
+      if (isNaN(valX) && isNaN(valY)) return 0;
+      if (isNaN(valX)) return 1;
+      if (isNaN(valY)) return -1;
+    }
+
     return direction * compare(x, y);
   });
 }
+
 
 
 function searchUsers(users, query) {
@@ -2201,6 +2215,22 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMoreBtn.style.display = 'block';
       }
     }
+
+    const sortFields = ["full_name", "course", "age", "gender", "country"];
+
+    table.tHead.addEventListener("click", e => {
+      const th = e.target.closest("th");
+      if (!th || !e.target.closest("button")) return;
+
+      const field = sortFields[th.cellIndex];
+      const order = th.getAttribute("aria-sort") === "ascending" ? "desc" : "asc";
+
+      table.tHead.querySelectorAll("th").forEach(h => h.setAttribute("aria-sort", "none"));
+      th.setAttribute("aria-sort", order === "asc" ? "ascending" : "descending");
+
+      tableData = sortUsers(teachers, {field, order});
+      populateTable(tableData, 1);
+    });
 
     loadMoreBtn.addEventListener('click', showMore);
     loadLessBtn.addEventListener('click', showLess);

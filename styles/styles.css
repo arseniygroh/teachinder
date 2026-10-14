@@ -339,12 +339,16 @@ h2 {
   border: 0;
   cursor: pointer;
 }
-.statistics__table th:hover {
+.statistics__table th[aria-sort=ascending], .statistics__table th[aria-sort=descending] {
   background-color: #f4f4f4;
   border-bottom: 3px solid #333;
 }
-.statistics__table th:hover button::after {
+.statistics__table th[aria-sort=ascending] button::after {
   content: " ↓";
+  color: #2a9bb0;
+}
+.statistics__table th[aria-sort=descending] button::after {
+  content: " ↑";
   color: #2a9bb0;
 }
 .statistics__table tbody tr:nth-child(even) {
