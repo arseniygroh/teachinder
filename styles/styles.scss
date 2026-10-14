@@ -361,6 +361,19 @@ h2 {
     row-gap: 1.5rem;
     text-align: center;
     cursor: pointer;
+
+    &__photo {
+      position: relative;
+    }
+    &.favorite .teacher-card__photo::after {
+      content: "\2605";
+      position: absolute;
+      top: 10px;
+      right: 5px;
+      font-size: 2rem;
+      color: #f2e600;
+    }
+     
   
     img {
       min-width: 155px;
@@ -677,8 +690,8 @@ h2 {
     }
 
     &__image {
-        width: 160px;
-        height: 160px;
+        width: 150px;
+        aspect-ratio: 1;
         object-fit: cover;
     }
 
@@ -699,6 +712,7 @@ h2 {
         margin: 0;
         font-size: 1.8rem;
         color: #333;
+        text-align: left;
     }
 
     &__favorite {

@@ -1882,7 +1882,7 @@ function fillFields(user) {
     return {
       ...user,
       id: user.id ?? new Date().getTime(),
-      favorite: typeof user.favorite === "boolean" ? user.favorite : Math.random() < 0.5,
+      favorite: typeof user.favorite === "boolean" ? user.favorite : false,
       course: courses.find(c => c.toLowerCase() === user.course?.toLowerCase()) ?? generateRandomCourse(),
       bg_color: user.bg_color ?? `#fff`,
       note: user.note ?? "",
@@ -2085,30 +2085,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const PAGE_SIZE = 10;
     let shown = 0;
 
-    function renderTeacherCards(teachers, low, high) {
-      const container = document.querySelector('.top-teachers__cards');
-      teachers.slice(low, high).forEach(teacher => {
-        const [first, ...rest] = teacher.full_name.split(' ');
-        const last = rest.join(' ');
-        const initials = [first, last].map(p => p[0]).join('.');
-
-        const card = document.createElement('article');
-        card.id = teacher.id;
-        card.className = 'teacher-card';
-        card.innerHTML = `
+    function createTeacherCard(teacher) {
+      const [first, ...rest] = teacher.full_name.split(" ");
+      const last = rest.join(" ");
+      const initials = [first, last].map(p => p[0]).join('.');
+    
+      const card = document.createElement('article');
+      card.id = teacher.id;
+      card.className = teacher.favorite ? 'teacher-card favorite' : 'teacher-card';
+      card.innerHTML = `
           ${teacher.picture_large
-            ? `<img src="${teacher.picture_large}" alt="">`
-            : `<div class="teacher-card__initials">${initials}</div>`}
+            ? `<div class="teacher-card__photo"><img src="${teacher.picture_large}" alt=""></div>`
+            : `<div class="teacher-card__photo"><div class="teacher-card__initials">${initials}</div></div>`}
           <div class="teacher-card__info">
             <div class="teacher-card__name">${first}${last ? `<br>${last}` : ''}</div>
             <div class="teacher-card__subject">${teacher.course ?? 'Unknown'}</div>
             <div class="teacher-card__origin">${teacher.country ?? 'Unknown'}</div>
           </div>
-        `;
-        container.appendChild(card);
-      });
+      `;
+      return card;
     }
 
+    function renderTeacherCards(teachers, low, high) {
+      const container = document.querySelector(".top-teachers__cards");
+      teachers.slice(low, high).forEach(t => container.appendChild(createTeacherCard(t)));
+    }
+
+    function renderFavorites() {
+      const list = document.querySelector(".favorites__carousel");
+      list.replaceChildren(
+        ...teachers.filter(t => t.favorite).map(t => {
+          const li = document.createElement("li");
+          li.className = "favorites__item";
+          li.appendChild(createTeacherCard(t));
+          return li;
+        })
+      );
+    }
+
+    renderFavorites();
     renderTeacherCards(teachers, shown, PAGE_SIZE);
     shown += 10;
 
@@ -2184,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="teacher-profile__details">
                   <div class="teacher-profile__title-wrapper">
                     <h2 class="teacher-profile__name">${teacher.full_name}</h2>
-                    <button type="button" class="teacher-profile__favorite" aria-label="Add to favorites">&#9734;</button>
+                    <button type="button" class="teacher-profile__favorite" aria-label="Add to favorites">${teacher.favorite ? "&#9733;" : "&#9734;"}</button>
                   </div>
                   <p class="teacher-profile__subject">${teacher.course ?? "Unknown subject"}</p>
                   <p class="teacher-profile__location">${teacher.city && teacher.country ? `${teacher.city}, ${teacher.country}` : "Unknown location"}</p>
@@ -2204,12 +2219,24 @@ document.addEventListener('DOMContentLoaded', function() {
         teacherInfoModal.setAttribute("aria-hidden", "false");
 
         const closeModalBtn = teacherInfoModal.querySelector(".modal__close");
-        const addToFavoritesBtn = teacherInfoModal.querySelector(".teacher-profile__favorite");
-        
+        const toggleFavoritesBtn = teacherInfoModal.querySelector(".teacher-profile__favorite");
+
         closeModalBtn.addEventListener("click", function() {
           console.log("Closing teacher info modal");
           teacherInfoModal.classList.remove("is-open");
           teacherInfoModal.setAttribute("aria-hidden", "true");
+        });
+
+        toggleFavoritesBtn.addEventListener("click", () => {
+          teacher.favorite = !teacher.favorite;
+          toggleFavoritesBtn.innerHTML = teacher.favorite ? "&#9733;" : "&#9734;";
+        
+          document.querySelectorAll('.top-teachers__cards .teacher-card')
+          .forEach(c => {
+            if (c.id === teacher.id) c.classList.toggle("favorite", teacher.favorite);
+          });
+        
+          renderFavorites();
         });
 
       }
