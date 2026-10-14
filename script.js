@@ -2081,8 +2081,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const filters = document.querySelector(".top-teachers__filters");
     const loadMoreBtn = document.getElementById('load-more-btn');
     const loadLessBtn = document.getElementById('load-less-btn');
+    const table = document.querySelector(".statistics__table");
 
     const PAGE_SIZE = 10;
+    const TOTAL_PAGES = Math.ceil(teachers.length / PAGE_SIZE);
+    let currentPage = 1;
     let shown = 0;
     let visibleTeachers = teachers
 
@@ -2140,6 +2143,26 @@ document.addEventListener('DOMContentLoaded', function() {
       );
     }
 
+    function populateTable(teachers, page) {
+      currentPage = page;
+      const start = (page - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      let html = ``;
+      teachers.slice(start, end).forEach(t => {
+        html += `
+          <tr>
+            <td>${t.full_name ?? "Anonym"}</td>
+            <td>${t.course ?? "None"}</td>
+            <td>${t.age ?? "None"}</td>
+            <td>${t.gender ?? "None"}</td>
+            <td>${t.country ?? "None"}</td>
+          </tr>
+        `;
+      });
+      const tbody = table.querySelector("tbody");
+      tbody.innerHTML = html;
+    }
+
     filters.children[1].innerHTML = `
       <div class="top-teachers__filter">
         <label for="filter-region">Region</label>
@@ -2148,6 +2171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
 
     renderFavorites();
+    populateTable(teachers, currentPage);
     showMore();
 
     function showMore() {
