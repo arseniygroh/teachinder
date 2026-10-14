@@ -2063,7 +2063,7 @@ function sortUsers(users, { field, order = "asc" } = {}) {
 function searchUsers(users, query) {
   if (query == null) return [];
   const text = String(query).trim();
-  if (text === "") return [];
+  if (text === "") return users;
 
   if (/^\d+$/.test(text)) {
     const age = Number(text);
@@ -2097,6 +2097,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadLessBtn = document.getElementById('load-less-btn');
     const table = document.querySelector(".statistics__table");
     const pagination = document.querySelector(".statistics__pagination");
+    const searchForm = document.querySelector(".header__search");
 
     const PAGE_SIZE = 10;
     let currentPage = 1;
@@ -2304,6 +2305,14 @@ document.addEventListener('DOMContentLoaded', function() {
       
       rerenderTeacherCards(filteredTeachers);
     });
+
+    searchForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const rawData = new FormData(searchForm);
+      const {query} = Object.fromEntries(rawData);
+      const resultData = searchUsers(teachers, query);
+      rerenderTeacherCards(resultData);
+    })
     
     document.querySelector("main").addEventListener("click", e => {
       const target = e.target;
