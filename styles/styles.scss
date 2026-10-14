@@ -351,9 +351,9 @@ h2 {
         gap: 0.9rem;
       }
   
-      a {
+      li {
         color: $link;
-  
+        cursor: pointer;
         &:hover {
           text-decoration: underline;
         }

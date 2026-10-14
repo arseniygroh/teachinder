@@ -2096,12 +2096,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadMoreBtn = document.getElementById('load-more-btn');
     const loadLessBtn = document.getElementById('load-less-btn');
     const table = document.querySelector(".statistics__table");
+    const pagination = document.querySelector(".statistics__pagination");
 
     const PAGE_SIZE = 10;
-    const TOTAL_PAGES = Math.ceil(teachers.length / PAGE_SIZE);
     let currentPage = 1;
     let shown = 0;
     let visibleTeachers = teachers
+    let tableData = teachers;
 
     function createCountryFilter() {
       const countries = [...new Set(teachers.map(t => t.country).filter(Boolean))].sort();
@@ -2110,6 +2111,23 @@ document.addEventListener('DOMContentLoaded', function() {
           ${`<option value="">All Countries</option>` + countries.map(c => `<option value="${c}">${c}</option>`).join('')}
         </select>
       `;
+    }
+
+    function populatePagination() {
+      const totalPages = Math.ceil(tableData.length / PAGE_SIZE);
+      let html = ``;
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+          html += `
+            <li aria-current="page">${i}</li>
+          `;
+        } else {
+          html += `
+            <li>${i}</li>
+          `
+        }
+      }
+      pagination.querySelector("ul").innerHTML = html;
     }
 
     function createTeacherCard(teacher) {
@@ -2185,7 +2203,8 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
 
     renderFavorites();
-    populateTable(teachers, currentPage);
+    populateTable(tableData, currentPage);
+    populatePagination();
     showMore();
 
     function showMore() {
@@ -2230,6 +2249,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
       tableData = sortUsers(teachers, {field, order});
       populateTable(tableData, 1);
+    });
+
+    pagination.querySelector("ul").addEventListener("click", e => {
+      const li = e.target.closest("li");
+      if (li) {
+        currentPage = Number(li.textContent);
+        populateTable(tableData, currentPage);
+      }
     });
 
     loadMoreBtn.addEventListener('click', showMore);

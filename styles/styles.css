@@ -363,10 +363,11 @@ h2 {
   display: flex;
   gap: 0.9rem;
 }
-.statistics__pagination a {
+.statistics__pagination li {
   color: #2a9bb0;
+  cursor: pointer;
 }
-.statistics__pagination a:hover {
+.statistics__pagination li:hover {
   text-decoration: underline;
 }
 
