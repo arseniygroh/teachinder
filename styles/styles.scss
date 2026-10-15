@@ -4,6 +4,7 @@ $accent: #f4594a;
 $hover: #be3b2f;    
 $border: #b5b5b5;
 $link: #2a9bb0;
+$error: #d93025;
 $transition: 0.25s ease;
 
 @mixin divider {
@@ -386,7 +387,7 @@ h2 {
       min-width: 155px;
       aspect-ratio: 1;
       border-radius: 50%;
-      border: 2px solid $accent;
+      //border: 2px solid $accent;
       display: block;
       object-fit: cover;
       overflow: hidden;
@@ -417,7 +418,7 @@ h2 {
       width: 155px;
       aspect-ratio: 1;
       border-radius: 50%;
-      border: 2px solid $accent;
+      //border: 2px solid $accent;
       color: $accent;
       display: flex;
       justify-content: center;
@@ -670,6 +671,25 @@ h2 {
         width: 40px;
         height: 30px;
         cursor: pointer;
+    }
+    &__errors {
+      margin: 0 0 1rem;
+      padding: 0.75rem 1rem 0.75rem 2rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: $error;
+      background-color: rgba($error, 0.08);
+      border: 1px solid rgba($error, 0.35);
+      border-left-width: 4px;
+      border-radius: 2px;
+      list-style: disc;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.3rem;
+
+      &:empty {
+        display: none;
+      }
     }
 }
 

@@ -356,63 +356,63 @@
                 <form class="form">
                     <div class="form__group">
                         <label for="add-name" class="form__label">Name</label>
-                        <input type="text" id="add-name" class="form__input" placeholder="Enter name">
+                        <input type="text" required name="full_name" id="add-name" class="form__input" placeholder="Enter name">
                     </div>
                     <div class="form__group">
                         <label for="add-speciality" class="form__label">Speciality</label>
-                        <select id="add-speciality" class="form__select">
-                            <option value="mathematics">Mathematics</option>
-                            <option value="chemistry">Chemistry</option>
-                            <option value="english">English</option>
-                        </select>
+                        <input type="text" required id="add-speciality" name="course" class="form__input">
                     </div>
-                    <div class="form__row">
-                        <div class="form__group">
-                            <label for="add-country" class="form__label">Country</label>
-                            <select id="add-country" class="form__select">
-                                <option value="ukraine">Ukraine</option>
-                                <option value="usa">USA</option>
-                            </select>
-                        </div>
-                        <div class="form__group">
-                            <label for="add-city" class="form__label">City</label>
-                            <input type="text" id="add-city" class="form__input">
-                        </div>
+                    <div class="form__group">
+                        <label for="add-country" class="form__label">Country</label>
+                        <input type="text" required id="add-country" name="country" class="form__input">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-city" class="form__label">City</label>
+                        <input type="text" required name="city" id="add-city" class="form__input">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-state" class="form__label">State</label>
+                        <input type="text" required name="state" id="add-state" class="form__input">
                     </div>
                     <div class="form__row">
                         <div class="form__group">
                             <label for="add-email" class="form__label">Email</label>
-                            <input type="email" id="add-email" class="form__input">
+                            <input type="email" required name="email" id="add-email" class="form__input">
                         </div>
                         <div class="form__group">
                             <label for="add-phone" class="form__label">Phone</label>
-                            <input type="tel" id="add-phone" class="form__input">
+                            <input type="tel" required name="phone" id="add-phone" class="form__input">
                         </div>
                     </div>
                     <div class="form__group">
                         <label for="add-dob" class="form__label">Date of birth</label>
-                        <input type="date" id="add-dob" class="form__input">
+                        <input type="date" required name="b_date" id="add-dob" class="form__input">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-image" class="form__label">Your picture url (optional)</label>
+                        <input type="text" name="picture_large" id="add-image" class="form__input">
                     </div>
                     <div class="form__row form__row--align-center">
                         <div class="form__group form__group--inline">
                             <span class="form__label">Sex</span>
                             <label class="form__radio-label">
-                                <input type="radio" name="sex" value="male"> Male
+                                <input required type="radio" name="gender" value="Male"> Male
                             </label>
                             <label class="form__radio-label">
-                                <input type="radio" name="sex" value="female"> Female
+                                <input required type="radio" name="gender" value="Female"> Female
                             </label>
                         </div>
                     </div>
                     <div class="form__group form__group--inline">
                         <label for="add-color" class="form__label">Background color</label>
-                        <input type="color" id="add-color" class="form__color" value="#ffffff">
+                        <input type="color" name="bg_color" id="add-color" class="form__color" value="#ffffff">
                     </div>
                     <div class="form__group">
                         <label for="add-notes" class="form__label">Notes (optional)</label>
-                        <textarea id="add-notes" class="form__textarea" rows="4"></textarea>
+                        <textarea id="add-notes" name="note" class="form__textarea" rows="4"></textarea>
                     </div>
                     <button type="submit" class="button button--large button--outline-primary">Add</button>
+                    <ul class="form__errors" aria-live="polite"></ul>
                 </form>
             </div>
         </div>

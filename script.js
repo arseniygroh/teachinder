@@ -1965,7 +1965,7 @@ function validateUser(user) {
     if (!isValidString(user.full_name)) {
         errors.push("Full name is required and must be a non-empty string");
     } else {
-        const nameParts = user.full_name.trim().split(' ');
+        const nameParts = user.full_name.trim().split(/\s+/);
         if (nameParts.length < 2) {
             errors.push("Full name must contain first name and a last name");
         }
@@ -1996,8 +1996,14 @@ function validateUser(user) {
         errors.push("Age is required and must be a non-negative number.");
     }
 
-    if (!isValidPhone(user.phone, user.country)) {
-        errors.push(`Phone number is required and must match the format for ${user.country}.`);
+    const phone = typeof user.phone === "string" ? user.phone : "";
+
+    if (Object.hasOwn(phoneFormats, user.country)) {
+      if (!isValidPhone(phone, user.country)) {
+        errors.push(`Phone number must match the format for ${user.country}.`);
+      }
+    } else if (!/^\+?\d{7,15}$/.test(phone.replace(/[\s()-]/g, ""))) {
+      errors.push("Phone number must contain 7-15 digits (spaces, dashes and parentheses are allowed).");
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
@@ -2090,6 +2096,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const addTeacherBtns = document.querySelectorAll('.add_teacher_btn');
     const teacherCards = document.querySelectorAll('.teacher-card');
     const addTeacherModal = document.getElementById('add-teacher-modal');
+    const addTeacherForm = addTeacherModal.querySelector(".form");
+    const errorsBox = addTeacherForm.querySelector(".form__errors");
     const teacherInfoModal = document.getElementById('teacher-info-modal');
     const closeAddTeacherModalBtn = addTeacherModal.querySelector('.modal__close');
     const filters = document.querySelector(".top-teachers__filters");
@@ -2104,6 +2112,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let shown = 0;
     let visibleTeachers = teachers
     let tableData = teachers;
+    const filterQueries = {};
 
     function createCountryFilter() {
       const countries = [...new Set(teachers.map(t => t.country).filter(Boolean))].sort();
@@ -2141,8 +2150,8 @@ document.addEventListener('DOMContentLoaded', function() {
       card.className = teacher.favorite ? 'teacher-card favorite' : 'teacher-card';
       card.innerHTML = `
           ${teacher.picture_large
-            ? `<div class="teacher-card__photo"><img src="${teacher.picture_large}" alt=""></div>`
-            : `<div class="teacher-card__photo"><div class="teacher-card__initials">${initials}</div></div>`}
+            ? `<div class="teacher-card__photo"><img style="border: 2px solid ${teacher.bg_color}" src="${teacher.picture_large}" alt=""></div>`
+            : `<div class="teacher-card__photo"><div style="border: 2px solid ${teacher.bg_color}" class="teacher-card__initials">${initials}</div></div>`}
           <div class="teacher-card__info">
             <div class="teacher-card__name">${first}${last ? `<br>${last}` : ''}</div>
             <div class="teacher-card__subject">${teacher.course ?? 'Unknown'}</div>
@@ -2270,12 +2279,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    addTeacherForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const rawData = new FormData(e.currentTarget);
+      const teacherData = Object.fromEntries(rawData);
+      teacherData.age = new Date().getFullYear() - new Date(teacherData.b_date).getFullYear();
+      const teacher = {
+        id: crypto.randomUUID(),
+        full_name: teacherData.full_name.trim(),
+        gender: teacherData.gender,
+        city: teacherData.city.trim(),
+        state: teacherData.state.trim(),
+        country: teacherData.country.trim(),
+        email: teacherData.email.trim(),
+        phone: teacherData.phone.trim(),
+        b_date: new Date(teacherData.b_date).toISOString(),
+        age: teacherData.age,
+        course: teacherData.course.trim(),
+        bg_color: teacherData.bg_color,
+        note: teacherData.note.trim(),
+        favorite: false,
+        ...(teacherData.picture_large.trim() && {picture_large: teacherData.picture_large.trim()}),
+      };
+      const errors = validateUser(teacher);
+      if (teachers.some(t => t.full_name?.toLowerCase() === teacher.full_name.toLowerCase())) {
+        errors.push("A teacher with this name already exists");
+      }
+      if (errors.length === 0) {
+        teachers.unshift(teacher);
+        rerenderTeacherCards(filterUsers(teachers, filterQueries));
+        tableData = teachers;
+        populateTable(tableData, 1);
+
+        addTeacherForm.reset();
+        addTeacherModal.classList.remove("is-open");
+        addTeacherModal.setAttribute("aria-hidden", "true");
+      } else {
+        errorsBox.replaceChildren(...errors.map(msg => {
+          const li = document.createElement("li");
+          li.textContent = msg;
+          return li;
+        }));
+      }
+    });
+
     closeAddTeacherModalBtn?.addEventListener('click', function() {
         addTeacherModal.classList.remove("is-open");
         addTeacherModal.setAttribute("aria-hidden", "true");
     });
 
-    const filterQueries = {};
+    
 
     filters.addEventListener("change", e => {
       const select = e.target.closest("select");
