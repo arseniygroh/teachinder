@@ -2092,9 +2092,18 @@ function percentage(total, matched) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    const teachers = normalizeUsers(randomUserMock);
+    function saveTeachers() {
+      localStorage.setItem("teachers_data", JSON.stringify(teachers));
+    }
+    
+    let stored = null;
+    try {
+      stored = JSON.parse(localStorage.getItem("teachers_data"));
+    } catch {}
+    
+    const teachers = Array.isArray(stored) ? stored : normalizeUsers(randomUserMock);
+    saveTeachers();
     const addTeacherBtns = document.querySelectorAll('.add_teacher_btn');
-    const teacherCards = document.querySelectorAll('.teacher-card');
     const addTeacherModal = document.getElementById('add-teacher-modal');
     const addTeacherForm = addTeacherModal.querySelector(".form");
     const errorsBox = addTeacherForm.querySelector(".form__errors");
@@ -2122,6 +2131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </select>
       `;
     }
+
 
     function populatePagination() {
       const totalPages = Math.ceil(tableData.length / PAGE_SIZE);
@@ -2203,6 +2213,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       const tbody = table.querySelector("tbody");
       tbody.innerHTML = html;
+      populatePagination();
     }
 
     filters.children[1].innerHTML = `
@@ -2214,19 +2225,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     renderFavorites();
     populateTable(tableData, currentPage);
-    populatePagination();
     showMore();
+
+    function updateButtons() {
+      loadMoreBtn.style.display = shown >= visibleTeachers.length ? 'none' : '';
+      loadLessBtn.style.display = shown > PAGE_SIZE ? '' : 'none';
+    }
 
     function showMore() {
       renderTeacherCards(visibleTeachers, shown, shown + PAGE_SIZE);
       shown = Math.min(shown + PAGE_SIZE, visibleTeachers.length);
 
-      if (shown >= visibleTeachers.length) {
-        loadMoreBtn.style.display = 'none';
-      } else if (shown > PAGE_SIZE) {
-        loadMoreBtn.style.display = 'block';
-        loadLessBtn.style.display = 'block';
-      }
+      updateButtons();
     }
 
     function showLess() {
@@ -2236,13 +2246,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.removeChild(container.children[right]);
       }
       shown = Math.max(shown - PAGE_SIZE, PAGE_SIZE);
-      if (shown <= PAGE_SIZE) {
-        loadLessBtn.style.display = 'none';
-        loadMoreBtn.style.display = 'block';
-      } else {
-        loadLessBtn.style.display = 'block';
-        loadMoreBtn.style.display = 'block';
-      }
+      updateButtons();
     }
 
     const sortFields = ["full_name", "course", "age", "gender", "country"];
@@ -2307,6 +2311,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (errors.length === 0) {
         teachers.unshift(teacher);
+        saveTeachers();
         rerenderTeacherCards(filterUsers(teachers, filterQueries));
         tableData = teachers;
         populateTable(tableData, 1);
@@ -2392,8 +2397,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="modal__body teacher-profile">
               <div class="teacher-profile__header">
                 ${teacher.picture_large
-                  ? `<img class="teacher-profile__image" src="${teacher.picture_large}" alt="">`
-                  : `<div class="teacher-card__initials">${initials}</div>`}
+                  ? `<img class="teacher-profile__image" style="border: 2px solid ${teacher.bg_color}" src="${teacher.picture_large}" alt="">`
+                  : `<div class="teacher-card__initials" style="border: 2px solid ${teacher.bg_color}">${initials}</div>`}
                 <div class="teacher-profile__details">
                   <div class="teacher-profile__title-wrapper">
                     <h2 class="teacher-profile__name">${teacher.full_name}</h2>
@@ -2433,7 +2438,7 @@ document.addEventListener('DOMContentLoaded', function() {
           .forEach(c => {
             if (c.id === teacher.id) c.classList.toggle("favorite", teacher.favorite);
           });
-        
+          saveTeachers();
           renderFavorites();
         });
       }

@@ -384,7 +384,7 @@ h2 {
      
   
     img {
-      min-width: 155px;
+      width: 155px;
       aspect-ratio: 1;
       border-radius: 50%;
       //border: 2px solid $accent;
@@ -680,7 +680,6 @@ h2 {
       color: $error;
       background-color: rgba($error, 0.08);
       border: 1px solid rgba($error, 0.35);
-      border-left-width: 4px;
       border-radius: 2px;
       list-style: disc;
       display: flex;
