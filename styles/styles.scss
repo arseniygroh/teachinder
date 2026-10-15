@@ -4,6 +4,7 @@ $accent: #f4594a;
 $hover: #be3b2f;    
 $border: #b5b5b5;
 $link: #2a9bb0;
+$error: #d93025;
 $transition: 0.25s ease;
 
 @mixin divider {
@@ -225,6 +226,18 @@ h2 {
         gap: 1rem;
     }
 
+    &__btns {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.7rem;
+      align-items: center;
+
+      button {
+        width: 100%;
+        max-width: 200px;
+      }
+    }
+
     // &__card {
     //     display: flex;
     //     flex-direction: column;
@@ -307,13 +320,20 @@ h2 {
           cursor: pointer;
         }
   
-        &:hover {
+        &[aria-sort="ascending"],
+        &[aria-sort="descending"] {
           background-color: #f4f4f4;
           border-bottom: 3px solid #333;
-          button::after {
-            content: " \2193";
-            color: $link;
-          }
+        }
+
+        &[aria-sort="ascending"] button::after {
+          content: " \2193";
+          color: $link;
+        }
+
+        &[aria-sort="descending"] button::after {
+          content: " \2191";
+          color: $link;
         }
       }
   
@@ -332,9 +352,9 @@ h2 {
         gap: 0.9rem;
       }
   
-      a {
+      li {
         color: $link;
-  
+        cursor: pointer;
         &:hover {
           text-decoration: underline;
         }
@@ -349,12 +369,25 @@ h2 {
     row-gap: 1.5rem;
     text-align: center;
     cursor: pointer;
+
+    &__photo {
+      position: relative;
+    }
+    &.favorite .teacher-card__photo::after {
+      content: "\2605";
+      position: absolute;
+      top: 10px;
+      right: 5px;
+      font-size: 2rem;
+      color: #f2e600;
+    }
+     
   
     img {
-      max-width: 155px;
+      width: 155px;
       aspect-ratio: 1;
       border-radius: 50%;
-      border: 2px solid $accent;
+      //border: 2px solid $accent;
       display: block;
       object-fit: cover;
       overflow: hidden;
@@ -379,6 +412,18 @@ h2 {
   
     &__origin {
       font-size: 0.6rem;
+    }
+
+    &__initials {
+      width: 155px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      //border: 2px solid $accent;
+      color: $accent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
     }
 }
   
@@ -627,6 +672,24 @@ h2 {
         height: 30px;
         cursor: pointer;
     }
+    &__errors {
+      margin: 0 0 1rem;
+      padding: 0.75rem 1rem 0.75rem 2rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: $error;
+      background-color: rgba($error, 0.08);
+      border: 1px solid rgba($error, 0.35);
+      border-radius: 2px;
+      list-style: disc;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.3rem;
+
+      &:empty {
+        display: none;
+      }
+    }
 }
 
 .button {
@@ -653,8 +716,8 @@ h2 {
     }
 
     &__image {
-        width: 160px;
-        height: 160px;
+        width: 150px;
+        aspect-ratio: 1;
         object-fit: cover;
     }
 
@@ -675,6 +738,7 @@ h2 {
         margin: 0;
         font-size: 1.8rem;
         color: #333;
+        text-align: left;
     }
 
     &__favorite {

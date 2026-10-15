@@ -66,7 +66,7 @@
                             </div>
                             <div class="top-teachers__filter">
                                 <label for="filter-sex">Sex</label>
-                                <select id="filter-sex" name="sex">
+                                <select id="filter-sex" name="gender">
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
@@ -78,13 +78,13 @@
                             </div>
                             <div class="top-teachers__filter">
                                 <label>
-                                    <input type="checkbox" name="favorites"> Only favorites
+                                    <input type="checkbox" name="favorite"> Only favorites
                                 </label>
                             </div>
                         </form>
                     </header>
                     <div class="top-teachers__cards">
-                        <article class="teacher-card">
+                        <!-- <article class="teacher-card">
                             <img src="images/teacher.avif" alt="">
                             <div class="teacher-card__info">
                                 <div class="teacher-card__name">Ihor <br> Tkachuck</div>
@@ -123,7 +123,11 @@
                                 <div class="teacher-card__subject">Chemistry</div>
                                 <div class="teacher-card__origin">Ukraine</div>
                             </div>
-                        </article>
+                        </article> -->
+                    </div>
+                    <div class="top-teachers__btns">
+                        <button type="button" class="button" id="load-more-btn">Load more</button>
+                        <button type="button" style="display: none;" class="button" id="load-less-btn">Load less</button>
                     </div>
                 </div>
             </section>
@@ -134,15 +138,15 @@
                     <table class="statistics__table">
                       <thead>
                         <tr>
-                          <th scope="col"><button type="button">Name</button></th>
-                          <th scope="col"><button type="button">Speciality</button></th>
-                          <th scope="col"><button type="button">Age</button></th>
-                          <th scope="col"><button type="button">Gender</button></th>
-                          <th scope="col"><button type="button">Nationality</button></th>
-                        </tr>
+                            <th scope="col" aria-sort="none"><button type="button">Name</button></th>
+                            <th scope="col" aria-sort="none"><button type="button">Speciality</button></th>
+                            <th scope="col" aria-sort="none"><button type="button">Age</button></th>
+                            <th scope="col" aria-sort="none"><button type="button">Gender</button></th>
+                            <th scope="col" aria-sort="none"><button type="button">Nationality</button></th>
+                          </tr>
                       </thead>
                       <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td>Daisy Alexander</td>
                             <td>Chemistry</td>
                             <td>28</td>
@@ -211,17 +215,12 @@
                             <td>36</td>
                             <td>Female</td>
                             <td>France</td>
-                        </tr>
+                        </tr> -->
                       </tbody>
                     </table>
                   </div>
                   <nav class="statistics__pagination" aria-label="Statistics pages">
                     <ul>
-                      <li><span aria-current="page">1</span></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">3</a></li>
-                      <li aria-hidden="true">...</li>
-                      <li><a href="#">Last</a></li>
                     </ul>
                   </nav>
                 </div>
@@ -230,7 +229,7 @@
                 <div class="favorites__container">
                   <h2>Favorites</h2>
                   <ul class="favorites__carousel">
-                    <li class="favorites__item">
+                    <!-- <li class="favorites__item">
                       <article class="teacher-card">
                         <img src="images/teacher.avif" alt="">
                         <div class="teacher-card__info">
@@ -310,7 +309,7 @@
                             <div class="teacher-card__origin">Ukraine</div>
                           </div>
                         </article>
-                    </li>
+                    </li> -->
                   </ul>
                 </div>
             </section>
@@ -357,63 +356,63 @@
                 <form class="form">
                     <div class="form__group">
                         <label for="add-name" class="form__label">Name</label>
-                        <input type="text" id="add-name" class="form__input" placeholder="Enter name">
+                        <input type="text" required name="full_name" id="add-name" class="form__input" placeholder="Enter name">
                     </div>
                     <div class="form__group">
                         <label for="add-speciality" class="form__label">Speciality</label>
-                        <select id="add-speciality" class="form__select">
-                            <option value="mathematics">Mathematics</option>
-                            <option value="chemistry">Chemistry</option>
-                            <option value="english">English</option>
-                        </select>
+                        <input type="text" required id="add-speciality" name="course" class="form__input">
                     </div>
-                    <div class="form__row">
-                        <div class="form__group">
-                            <label for="add-country" class="form__label">Country</label>
-                            <select id="add-country" class="form__select">
-                                <option value="ukraine">Ukraine</option>
-                                <option value="usa">USA</option>
-                            </select>
-                        </div>
-                        <div class="form__group">
-                            <label for="add-city" class="form__label">City</label>
-                            <input type="text" id="add-city" class="form__input">
-                        </div>
+                    <div class="form__group">
+                        <label for="add-country" class="form__label">Country</label>
+                        <input type="text" required id="add-country" name="country" class="form__input">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-city" class="form__label">City</label>
+                        <input type="text" required name="city" id="add-city" class="form__input">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-state" class="form__label">State</label>
+                        <input type="text" required name="state" id="add-state" class="form__input">
                     </div>
                     <div class="form__row">
                         <div class="form__group">
                             <label for="add-email" class="form__label">Email</label>
-                            <input type="email" id="add-email" class="form__input">
+                            <input type="email" required name="email" id="add-email" class="form__input">
                         </div>
                         <div class="form__group">
                             <label for="add-phone" class="form__label">Phone</label>
-                            <input type="tel" id="add-phone" class="form__input">
+                            <input type="tel" required name="phone" id="add-phone" class="form__input">
                         </div>
                     </div>
                     <div class="form__group">
                         <label for="add-dob" class="form__label">Date of birth</label>
-                        <input type="date" id="add-dob" class="form__input">
+                        <input type="date" required name="b_date" id="add-dob" class="form__input">
+                    </div>
+                    <div class="form__group">
+                        <label for="add-image" class="form__label">Your picture url (optional)</label>
+                        <input type="text" name="picture_large" id="add-image" class="form__input">
                     </div>
                     <div class="form__row form__row--align-center">
                         <div class="form__group form__group--inline">
                             <span class="form__label">Sex</span>
                             <label class="form__radio-label">
-                                <input type="radio" name="sex" value="male"> Male
+                                <input required type="radio" name="gender" value="Male"> Male
                             </label>
                             <label class="form__radio-label">
-                                <input type="radio" name="sex" value="female"> Female
+                                <input required type="radio" name="gender" value="Female"> Female
                             </label>
                         </div>
                     </div>
                     <div class="form__group form__group--inline">
                         <label for="add-color" class="form__label">Background color</label>
-                        <input type="color" id="add-color" class="form__color" value="#ffffff">
+                        <input type="color" name="bg_color" id="add-color" class="form__color" value="#ffffff">
                     </div>
                     <div class="form__group">
                         <label for="add-notes" class="form__label">Notes (optional)</label>
-                        <textarea id="add-notes" class="form__textarea" rows="4"></textarea>
+                        <textarea id="add-notes" name="note" class="form__textarea" rows="4"></textarea>
                     </div>
                     <button type="submit" class="button button--large button--outline-primary">Add</button>
+                    <ul class="form__errors" aria-live="polite"></ul>
                 </form>
             </div>
         </div>
