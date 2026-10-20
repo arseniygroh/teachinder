@@ -2091,18 +2091,34 @@ function percentage(total, matched) {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
+async function getTeachers() {
+  try {
+    const res = await fetch("https://randomuser.me/api/?results=50");
+    if (!res.ok) throw new Error("Failed to fetch teachers");
+    const data = await res.json();
+    return data.results;
+  } catch (e) {
+    alert(e.message);
+    return [];           
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
     function saveTeachers() {
       localStorage.setItem("teachers_data", JSON.stringify(teachers));
     }
-    
+
     let stored = null;
     try {
       stored = JSON.parse(localStorage.getItem("teachers_data"));
     } catch {}
-    
-    const teachers = Array.isArray(stored) ? stored : normalizeUsers(randomUserMock);
-    saveTeachers();
+
+    let teachers = Array.isArray(stored) && stored.length ? stored : null;
+    if (!teachers) {
+      const fetched = await getTeachers();
+      teachers = normalizeUsers(fetched);
+      if (fetched.length) saveTeachers();
+    }
     const addTeacherBtns = document.querySelectorAll('.add_teacher_btn');
     const addTeacherModal = document.getElementById('add-teacher-modal');
     const addTeacherForm = addTeacherModal.querySelector(".form");
