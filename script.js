@@ -2349,7 +2349,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
-    addTeacherForm.addEventListener("submit", e => {
+    addTeacherForm.addEventListener("submit", async e => {
       e.preventDefault();
       const rawData = new FormData(e.currentTarget);
       const teacherData = Object.fromEntries(rawData);
@@ -2376,13 +2376,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         errors.push("A teacher with this name already exists");
       }
       if (errors.length === 0) {
-        teachers.unshift(teacher);
-        saveTeachers();
-        updateView();
-
-        addTeacherForm.reset();
-        addTeacherModal.classList.remove("is-open");
-        addTeacherModal.setAttribute("aria-hidden", "true");
+        try {
+          const res = await fetch("http://localhost:3001/teachers", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(teacher)
+          });
+          
+          if (!res.ok) throw new Error("Couldn't add teacher, try again later");
+          alert("Added succesfully");
+          teachers.unshift(teacher);
+          saveTeachers();
+          updateView();
+          addTeacherForm.reset();
+          addTeacherModal.classList.remove("is-open");
+          addTeacherModal.setAttribute("aria-hidden", "true");
+        } catch (e) {
+          alert(e.message);
+          return;
+        }
       } else {
         errorsBox.replaceChildren(...errors.map(msg => {
           const li = document.createElement("li");
