@@ -2255,6 +2255,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     renderFavorites();
     updateView();
+    renderCountryFilter();
 
     function updateButtons() {
       loadLessBtn.style.display = shown > PAGE_SIZE ? '' : 'none';
