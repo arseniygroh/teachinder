@@ -2091,9 +2091,10 @@ function percentage(total, matched) {
 
 
 
-async function getTeachers() {
+async function getTeachers(amount=50, seed="teachinder") {
   try {
-    const res = await fetch("https://randomuser.me/api/?results=50");
+    const url = `https://randomuser.me/api/?results=${amount}` + (seed ? `&seed=${seed}` : "")
+    const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch teachers");
     const data = await res.json();
     return data.results;
@@ -2136,8 +2137,26 @@ document.addEventListener('DOMContentLoaded', async function() {
     let currentPage = 1;
     let shown = 0;
     let visibleTeachers = teachers
-    let tableData = teachers;
-    const filterQueries = {};
+    let filterQueries = {};
+    let searchQuery = "";
+    let sortState = {};
+
+    let isLoading = false;
+    
+    function computeVisibles() {
+      let listToRender = filterUsers(teachers, filterQueries);
+      listToRender = searchUsers(listToRender, searchQuery);
+      listToRender = sortUsers(listToRender, sortState);
+      visibleTeachers = listToRender;
+    }
+
+    function updateView() {
+      computeVisibles();
+      document.querySelector(".top-teachers__cards").replaceChildren();
+      shown = 0;
+      renderNextCards();
+      populateTable(visibleTeachers, 1);
+    }
 
     function createCountryFilter() {
       const countries = [...new Set(teachers.map(t => t.country).filter(Boolean))].sort();
@@ -2150,7 +2169,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     function populatePagination() {
-      const totalPages = Math.ceil(tableData.length / PAGE_SIZE);
+      const totalPages = Math.ceil(visibleTeachers.length / PAGE_SIZE);
       let html = ``;
       for (let i = 1; i <= totalPages; i++) {
         if (i === currentPage) {
@@ -2192,13 +2211,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       teachers.slice(low, high).forEach(t => container.appendChild(createTeacherCard(t)));
     }
 
-    function rerenderTeacherCards(teachers) {
-      document.querySelector(".top-teachers__cards").replaceChildren();
-      visibleTeachers = teachers;
-      shown = 0;
-      showMore();
-    }
-
     function renderFavorites() {
       const list = document.querySelector(".favorites__carousel");
       list.replaceChildren(
@@ -2232,27 +2244,63 @@ document.addEventListener('DOMContentLoaded', async function() {
       populatePagination();
     }
 
-    filters.children[1].innerHTML = `
-      <div class="top-teachers__filter">
-        <label for="filter-region">Region</label>
-        ${createCountryFilter()}
-      </div>
-    `;
+    function renderCountryFilter() {
+      filters.children[1].innerHTML = `
+        <div class="top-teachers__filter">
+          <label for="filter-region">Region</label>
+          ${createCountryFilter()}
+        </div>
+      `;
+    }
 
     renderFavorites();
-    populateTable(tableData, currentPage);
-    showMore();
+    updateView();
 
     function updateButtons() {
-      loadMoreBtn.style.display = shown >= visibleTeachers.length ? 'none' : '';
       loadLessBtn.style.display = shown > PAGE_SIZE ? '' : 'none';
     }
 
-    function showMore() {
+    function renderNextCards() {
       renderTeacherCards(visibleTeachers, shown, shown + PAGE_SIZE);
       shown = Math.min(shown + PAGE_SIZE, visibleTeachers.length);
-
       updateButtons();
+    }
+
+    function resetControls() {
+      filterQueries = {};
+      sortState = {};
+      searchQuery = "";
+      filters.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+      filters.querySelectorAll("input[type='checkbox']").forEach(c => c.checked = false);
+      searchForm.reset();
+      table.tHead.querySelectorAll("th").forEach(h => h.setAttribute("aria-sort", "none"));
+      renderCountryFilter();
+    }
+
+    async function showMore() {
+      if (isLoading) return;
+      if (shown < visibleTeachers.length) {
+        renderNextCards();
+        return;
+      }
+    
+      isLoading = true;
+      loadMoreBtn.disabled = true;
+      try {
+        const fetched = await getTeachers(PAGE_SIZE, null);
+        teachers.push(...normalizeUsers(fetched));
+    
+        resetControls();
+        visibleTeachers = [...teachers];
+        document.querySelector(".top-teachers__cards").replaceChildren();
+        renderTeacherCards(visibleTeachers, 0, visibleTeachers.length);
+        shown = visibleTeachers.length;
+        populateTable(visibleTeachers, 1);
+        updateButtons();
+      } finally {
+        isLoading = false;
+        loadMoreBtn.disabled = false;
+      }
     }
 
     function showLess() {
@@ -2277,15 +2325,16 @@ document.addEventListener('DOMContentLoaded', async function() {
       table.tHead.querySelectorAll("th").forEach(h => h.setAttribute("aria-sort", "none"));
       th.setAttribute("aria-sort", order === "asc" ? "ascending" : "descending");
 
-      tableData = sortUsers(teachers, {field, order});
-      populateTable(tableData, 1);
+      sortState.field = field;
+      sortState.order = order;
+      updateView();
     });
 
     pagination.querySelector("ul").addEventListener("click", e => {
       const li = e.target.closest("li");
       if (li) {
         currentPage = Number(li.textContent);
-        populateTable(tableData, currentPage);
+        populateTable(visibleTeachers, currentPage);
       }
     });
 
@@ -2328,9 +2377,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (errors.length === 0) {
         teachers.unshift(teacher);
         saveTeachers();
-        rerenderTeacherCards(filterUsers(teachers, filterQueries));
-        tableData = teachers;
-        populateTable(tableData, 1);
+        updateView();
 
         addTeacherForm.reset();
         addTeacherModal.classList.remove("is-open");
@@ -2373,19 +2420,15 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (checkbox) {
         filterQueries[checkbox.name] = checkbox.checked;
       }
-      console.log(filterQueries);
-      const filteredTeachers = filterUsers(teachers, filterQueries);
-      console.log(filteredTeachers);
-      
-      rerenderTeacherCards(filteredTeachers);
+      updateView();
     });
 
     searchForm.addEventListener("submit", e => {
       e.preventDefault();
       const rawData = new FormData(searchForm);
       const {query} = Object.fromEntries(rawData);
-      const resultData = searchUsers(teachers, query);
-      rerenderTeacherCards(resultData);
+      searchQuery = query ?? "";
+      updateView();
     })
     
     document.querySelector("main").addEventListener("click", e => {
