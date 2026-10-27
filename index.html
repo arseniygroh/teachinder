@@ -134,9 +134,13 @@
             </section>
             <section class="statistics">
                 <div class="statistics__container">
-                  <h2>Statistics</h2>
-                  <div class="statistics__chart">
-                    <canvas id="statistics-chart"></canvas>
+                    <h2>Statistics</h2>
+                    <div class="statistics__chart">
+                        <div class="statistics__canvas">
+                            <canvas id="statistics-chart"></canvas>
+                        </div>
+                        <p class="statistics__empty" hidden>No data to display</p>
+                    </div>
                     <div class="statistics__category">
                         <label for="chart-category">Select chart's category:</label>
                         <select name="chart-category" id="chart-category">
@@ -146,7 +150,7 @@
                             <option value="country">Country</option>
                         </select>
                     </div>
-                  </div>
+                  
                   <!-- <div class="statistics__table-wrapper">
                     <table class="statistics__table">
                       <thead>

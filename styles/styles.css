@@ -301,13 +301,41 @@ h2 {
   flex-direction: column;
   row-gap: 1.8rem;
 }
-.statistics__chart {
-  position: relative;
-  max-width: 500px;
-  margin: 0 auto;
+.statistics__category {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
 }
-.statistics #statistics-chart {
-  width: 100% !important;
+.statistics__category label {
+  color: #999;
+}
+.statistics__category select {
+  padding: 0.35rem 0.5rem;
+  font: inherit;
+  color: #222;
+  background-color: #fff;
+  border: 1px solid #b5b5b5;
+  cursor: pointer;
+}
+.statistics__chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.statistics__canvas {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  height: clamp(320px, 70vw, 560px);
+}
+.statistics__empty {
+  padding: 3rem 0;
+  text-align: center;
+  color: #999;
 }
 .statistics__container::after {
   content: "";

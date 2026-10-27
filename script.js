@@ -263,6 +263,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let sortState = {};
     let chart = null;
     let chartCategpry = "";
+    let map = null;
 
     let isLoading = false;
     
@@ -307,12 +308,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       return counts;
     }
 
-    function renderChart(teachers, field) {
-      const counts = [...countBy(teachers, field)].sort((a, b) => b[1] - a[1]);
+    function renderChart(teachers, field = document.getElementById("chart-category").value) {
+      const counts = [...countBy(teachers, field)].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
       const labels = counts.map(([k]) => k);
       const values = counts.map(([_, v]) => v);
       const colors = labels.map(() => `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`);
-    
+      document.querySelector(".statistics__empty").hidden = counts.length > 0;
       if (!chart) {
         chart = new Chart(document.getElementById("statistics-chart"), {
           type: "pie",
@@ -324,6 +325,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }] 
           },
           options: { 
+            maintainAspectRatio: false,
             plugins: {
               legend: {position: "bottom"} 
             } 
@@ -682,15 +684,15 @@ document.addEventListener('DOMContentLoaded', async function() {
           }
           const mapElem = toggleMapBtn.nextElementSibling;
           mapElem.classList.toggle("show-map");
-          let map;
+          
 
           if (mapElem.classList.contains("show-map")) {
-            map = L.map('map').setView([teacher.coordinates.latitude, teacher.coordinates.longitude], 13);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              maxZoom: 19,
-            }).addTo(map);
-            L.marker([teacher.coordinates.latitude, teacher.coordinates.longitude]).addTo(map)
+            const {latitude, longitude} = teacher.coordinates;
+            map = L.map(mapElem).setView([latitude, longitude], 13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            L.marker([latitude, longitude]).addTo(map);
           } else {
+            map?.remove();
             map = null;
           }
 
