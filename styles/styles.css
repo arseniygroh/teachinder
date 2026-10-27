@@ -306,6 +306,9 @@ h2 {
   max-width: 500px;
   margin: 0 auto;
 }
+.statistics #statistics-chart {
+  width: 100% !important;
+}
 .statistics__container::after {
   content: "";
   display: block;

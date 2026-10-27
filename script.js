@@ -2,74 +2,6 @@ import * as L from './node_modules/leaflet/dist/leaflet-src.esm.js';
 
 const courses = ["Mathematics", "Physics", "English", "Computer Science", "Dancing", "Chess", "Biology", "Chemistry", "Law", "Art", "Medicine", "Statistics"];
 
-const additionalUsers = [
-    {
-      gender: "male",
-      title: "Mr",
-      full_name: "Norbert Weishaupt",
-      city: "Rhön-Grabfeld",
-      state: "Mecklenburg-Vorpommern",
-      country: "Germany",
-      postcode: 52640,
-      coordinates: { latitude: "-42.1817", longitude: "-152.1685" },
-      timezone: { offset: "+9:30", description: "Adelaide, Darwin" },
-      email: "norbert.weishaupt@example.com",
-      b_day: "1956-12-23T19:09:19.602Z",
-      phone: "0079-8291509",
-      id: "fgesrg456dsf234c1",
-      favorite: true,
-      course: null,
-      bg_color: "#1f75cb",
-      note: null,
-    },
-    {
-      gender: "male",
-      title: "Mr",
-      full_name: "Claude Payne",
-      id: "PPS2340626T",
-      picture_large: "https://randomuser.me/api/portraits/men/40.jpg",
-      picture_thumbnail: "https://randomuser.me/api/portraits/thumb/men/40.jpg",
-      favorite: true,
-      course: null,
-      bg_color: null,
-      note: null,
-    },
-    {
-      gender: "male",
-      title: "Mr",
-      full_name: "Aaron Enoksen",
-      city: "Bruflat",
-      state: "Rogaland",
-      country: "Norway",
-      postcode: "6913",
-      coordinates: { latitude: "51.4281", longitude: "-160.4653" },
-      timezone: { offset: "+3:30", description: "Tehran" },
-      email: "aaron.enoksen@example.com",
-      id: "FN19068929566",
-      favorite: null,
-      course: null,
-      bg_color: "#dface7",
-      note: null,
-    },
-    {
-      gender: "female",
-      title: "Mrs",
-      full_name: "Olivia Storm",
-      city: "Kragerø",
-      country: "Norway",
-      postcode: "3127",
-      coordinates: { latitude: "57.2663", longitude: "141.0994" },
-      timezone: { offset: "+1:00", description: "Brussels, Copenhagen, Madrid, Paris" },
-      b_day: "1946-06-02T09:26:02.733Z",
-      id: "FN02064618043",
-      picture_large: "https://randomuser.me/api/portraits/women/67.jpg",
-      favorite: false,
-      course: "chemistry",
-      bg_color: "#dface7",
-      note: "old lady with a cats",
-    },
-];
-
 
 function generateRandomCourse() {
     return courses[Math.floor(Math.random() * courses.length)];
@@ -105,17 +37,9 @@ function normalizeUsers(users) {
         picture_thumbnail: user.picture.thumbnail,
         id: user.login.uuid,
     }));
-
-    const additional = additionalUsers.map(({ b_day, postcode, ...rest }) => fillFields({
-        ...rest,
-        ...(b_day && { b_date: b_day }),
-        ...(postcode && {
-          postcode: /^\d+$/.test(postcode) ? Number(postcode) : postcode,
-        }),
-    }));
-
+  
     const unique = new Map();
-    for (const user of [...additional, ...normalized]) {
+    for (const user of [...normalized]) {
         const key = user.full_name.trim().toLowerCase();
         if (!unique.has(key)) unique.set(key, user);
     }
@@ -338,6 +262,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let searchQuery = "";
     let sortState = {};
     let chart = null;
+    let chartCategpry = "";
 
     let isLoading = false;
     
@@ -354,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       shown = 0;
       renderNextCards();
       //populateTable(visibleTeachers, 1);
-      renderChart(visibleTeachers, "age");
+      renderChart(visibleTeachers, chartCategpry || "country");
     }
 
     function createCountryFilter() {
@@ -382,8 +307,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       return counts;
     }
 
-    function renderChart(users, field) {
-      const counts = [...countBy(users, field)].sort((a, b) => b[1] - a[1]);
+    function renderChart(teachers, field) {
+      const counts = [...countBy(teachers, field)].sort((a, b) => b[1] - a[1]);
       const labels = counts.map(([k]) => k);
       const values = counts.map(([_, v]) => v);
       const colors = labels.map(() => `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`);
@@ -411,6 +336,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         chart.update();
       }
     }
+
+    document.getElementById("chart-category").addEventListener("change", e => {
+      chartCategpry = e.target.value;
+      renderChart(visibleTeachers, chartCategpry);
+    });
 
 
     function populatePagination() {
@@ -519,7 +449,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       filters.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
       filters.querySelectorAll("input[type='checkbox']").forEach(c => c.checked = false);
       searchForm.reset();
-      table.tHead.querySelectorAll("th").forEach(h => h.setAttribute("aria-sort", "none"));
+      //table.tHead.querySelectorAll("th").forEach(h => h.setAttribute("aria-sort", "none"));
       renderCountryFilter();
     }
 
@@ -541,7 +471,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.querySelector(".top-teachers__cards").replaceChildren();
         renderTeacherCards(visibleTeachers, 0, visibleTeachers.length);
         shown = visibleTeachers.length;
-        populateTable(visibleTeachers, 1);
+        renderChart(visibleTeachers, chartCategpry || "country");
         updateButtons();
       } finally {
         isLoading = false;
