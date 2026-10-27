@@ -135,7 +135,10 @@
             <section class="statistics">
                 <div class="statistics__container">
                   <h2>Statistics</h2>
-                  <div class="statistics__table-wrapper">
+                  <div class="statistics__chart">
+                    <canvas id="statistics-chart"></canvas>
+                  </div>
+                  <!-- <div class="statistics__table-wrapper">
                     <table class="statistics__table">
                       <thead>
                         <tr>
@@ -146,7 +149,7 @@
                             <th scope="col" aria-sort="none"><button type="button">Nationality</button></th>
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody> -->
                         <!-- <tr>
                             <td>Daisy Alexander</td>
                             <td>Chemistry</td>
@@ -217,13 +220,13 @@
                             <td>Female</td>
                             <td>France</td>
                         </tr> -->
-                      </tbody>
+                      <!-- </tbody>
                     </table>
                   </div>
                   <nav class="statistics__pagination" aria-label="Statistics pages">
                     <ul>
                     </ul>
-                  </nav>
+                  </nav> -->
                 </div>
             </section>
             <section class="favorites">
@@ -446,6 +449,7 @@
             </div>
         </div>
     </div>
+    <script src="./node_modules/chart.js/dist/chart.umd.js"></script>
     <script type="module" src="script.js" defer></script>
 </body>
 </html>

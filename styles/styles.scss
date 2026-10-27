@@ -281,6 +281,12 @@ h2 {
         row-gap: 1.8rem;
     }
 
+    &__chart {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
     &__container::after {
       @include divider;
       margin-top: 2rem;

@@ -301,6 +301,11 @@ h2 {
   flex-direction: column;
   row-gap: 1.8rem;
 }
+.statistics__chart {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+}
 .statistics__container::after {
   content: "";
   display: block;
