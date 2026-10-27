@@ -1,3 +1,5 @@
+import * as L from './node_modules/leaflet/dist/leaflet-src.esm.js';
+
 const randomUserMock = [
     {
       gender: "male",
@@ -2488,7 +2490,8 @@ document.addEventListener('DOMContentLoaded', async function() {
               <div class="teacher-profile__about">
                 <p>${teacher.note || "No information provided"}</p>
               </div>
-              <a href="#" class="teacher-profile__map-toggle">toggle map</a>
+              <button type="button" class="teacher-profile__map-toggle">toggle map</button>
+              <div id="map" class="map"></div>
             </div>  
           </div>
         `;
@@ -2497,6 +2500,28 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const closeModalBtn = teacherInfoModal.querySelector(".modal__close");
         const toggleFavoritesBtn = teacherInfoModal.querySelector(".teacher-profile__favorite");
+        const toggleMapBtn = teacherInfoModal.querySelector(".teacher-profile__map-toggle");
+
+        toggleMapBtn.addEventListener("click", () => {
+          if (!teacher.coordinates) {
+            alert("This teacher doesn't share location");
+            return;
+          }
+          const mapElem = toggleMapBtn.nextElementSibling;
+          mapElem.classList.toggle("show-map");
+          let map;
+
+          if (mapElem.classList.contains("show-map")) {
+            map = L.map('map').setView([teacher.coordinates.latitude, teacher.coordinates.longitude], 13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              maxZoom: 19,
+            }).addTo(map);
+            L.marker([teacher.coordinates.latitude, teacher.coordinates.longitude]).addTo(map)
+          } else {
+            map = null;
+          }
+
+        });
 
         closeModalBtn.addEventListener("click", function() {
           console.log("Closing teacher info modal");

@@ -799,4 +799,30 @@ h2 {
             text-decoration: underline;
         }
     }
+  
+    #map {
+      display: none;
+      opacity: 0;
+      height: 350px; 
+      margin-top: 1.5rem;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: opacity 0.3s ease-in-out;
+
+      &.show-map {
+        display: block;
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        height: 280px;
+        margin-top: 1.2rem;
+      }
+
+      @media (max-width: 467px) {
+        height: 220px;
+        margin-top: 1rem;
+        border-radius: 6px;
+      }
+  }
 }

@@ -756,4 +756,30 @@ h2 {
 }
 .teacher-profile__map-toggle:hover {
   text-decoration: underline;
+}
+.teacher-profile #map {
+  display: none;
+  opacity: 0;
+  height: 350px;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+.teacher-profile #map.show-map {
+  display: block;
+  opacity: 1;
+}
+@media (max-width: 768px) {
+  .teacher-profile #map {
+    height: 280px;
+    margin-top: 1.2rem;
+  }
+}
+@media (max-width: 467px) {
+  .teacher-profile #map {
+    height: 220px;
+    margin-top: 1rem;
+    border-radius: 6px;
+  }
 }/*# sourceMappingURL=styles.css.map */
