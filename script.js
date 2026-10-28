@@ -264,6 +264,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     let chart = null;
     let chartCategpry = document.getElementById("chart-category").value;
     let map = null;
+    let pivot = null;
+    let statsView = "chart";
+    const mapping = {
+      full_name: {caption: "Name"},
+      course: {caption: "Speciality"},
+      age: {caption: "Age"},
+      gender: {caption: "Gender"},
+      country: {caption: "Country"},
+      city: {caption: "City"},
+      state: {caption: "State"},
+      email: {caption: "Email"},
+      phone: {caption: "Phone"},
+      favorite: {caption: "Favorite"},
+    };
 
     let isLoading = false;
     
@@ -280,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       shown = 0;
       renderNextCards();
       //populateTable(visibleTeachers, 1);
-      renderChart(visibleTeachers, chartCategpry || "country");
+      refreshStatistics();
     }
 
     function createCountryFilter() {
@@ -339,9 +353,109 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
     }
 
+    function flattenTeachers(teachers) {
+      return [...teachers.map(t => {
+        return {
+          full_name: t.full_name,
+          age: t.age,
+          course: t.course,
+          gender: t.gender,
+          country: t.country,
+          city: t.city,
+          state: t.state,
+          email: t.email,
+          phone: t.phone,
+          favorite: t.favorite ? "Yes" : "No"
+        }
+      })];
+    }
+
+    function getFlatReport() {
+      const fields = Object.keys(mapping);
+      return {
+        dataSource: { 
+          data: 
+          flattenTeachers(teachers) 
+        },
+        slice: {
+          rows: fields.map(key => ({ 
+            uniqueName: key, 
+            caption: mapping[key].caption 
+          })),
+          flatOrder: fields,
+        },
+        options: { 
+          grid: { 
+            showGrandTotals: "off", 
+            type: "flat" 
+          } 
+        },
+      };
+    }
+    
+    function getCountryReport() {
+      return {
+        dataSource: { 
+          data: flattenTeachers(teachers) 
+        },
+        slice: {
+          rows: [{uniqueName: "country", caption: "Country"}],
+          columns: [{uniqueName: "[Measures]"}],
+          measures: [{
+            uniqueName: "full_name", 
+            aggregation: "count", 
+            caption: "Teachers"
+          }],
+        },
+        options: { 
+          grid: { 
+            showGrandTotals: "off", 
+            type: "compact" 
+          } 
+        },
+      };
+    }
+    
+    function showStatsView(view) {
+      statsView = view;
+      const isChart = view === "chart";
+      document.querySelector(".statistics__chart-wrapper").hidden = !isChart;
+      document.getElementById("statistics-table").hidden = isChart;
+      if (!isChart) showReport(view);
+    }
+
+    document.querySelector(".statistics__views").addEventListener("click", e => {
+      const btn = e.target.closest(".statistics__view-btn");
+      if (btn) showStatsView(btn.dataset.view);
+    });
+    
+    function showReport(name) {
+      const report = name === "country" ? getCountryReport() : getFlatReport();
+      if (!pivot) {
+        pivot = new WebDataRocks({
+          container: "#statistics-table",
+          toolbar: true,
+          width: "100%",
+          height: 480,
+          report,
+        });
+      } else {
+        pivot.setReport(report);
+      }
+    }
+
+    function refreshStatistics() {
+      renderChart(teachers);
+      if (pivot && statsView !== "chart") {
+        pivot.updateData({
+          data: flattenTeachers(teachers)
+        });
+      }
+    }
+
     document.getElementById("chart-category").addEventListener("change", e => {
       chartCategpry = e.target.value;
-      renderChart(visibleTeachers, chartCategpry);
+      renderChart(teachers, chartCategpry);
     });
 
 
@@ -473,7 +587,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.querySelector(".top-teachers__cards").replaceChildren();
         renderTeacherCards(visibleTeachers, 0, visibleTeachers.length);
         shown = visibleTeachers.length;
-        renderChart(visibleTeachers, chartCategpry || "country");
+        refreshStatistics()
         updateButtons();
       } finally {
         isLoading = false;

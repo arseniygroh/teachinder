@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teachinder</title>
     <link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css" />
+    <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
@@ -135,21 +136,29 @@
             <section class="statistics">
                 <div class="statistics__container">
                     <h2>Statistics</h2>
-                    <div class="statistics__chart">
-                        <div class="statistics__canvas">
-                            <canvas id="statistics-chart"></canvas>
+                    <div class="statistics__views" role="group" aria-label="Statistics view">
+                        <button type="button" class="button statistics__view-btn" data-view="chart">Chart</button>
+                        <button type="button" class="button statistics__view-btn" data-view="country">Report by country</button>
+                        <button type="button" class="button statistics__view-btn" data-view="flat">All teachers</button>
+                    </div>
+                    <div class="statistics__chart-wrapper">
+                        <div class="statistics__chart">
+                            <div class="statistics__canvas">
+                                <canvas id="statistics-chart"></canvas>
+                            </div>
+                            <p class="statistics__empty" hidden>No data to display</p>
                         </div>
-                        <p class="statistics__empty" hidden>No data to display</p>
+                        <div class="statistics__category">
+                            <label for="chart-category">Select chart's category:</label>
+                            <select name="chart-category" id="chart-category">
+                                <option value="age">Age</option>
+                                <option value="course">Course</option>
+                                <option value="gender">Gender</option>
+                                <option value="country" selected>Country</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="statistics__category">
-                        <label for="chart-category">Select chart's category:</label>
-                        <select name="chart-category" id="chart-category">
-                            <option value="age">Age</option>
-                            <option value="course">Course</option>
-                            <option value="gender">Gender</option>
-                            <option value="country" selected>Country</option>
-                        </select>
-                    </div>
+                    <div id="statistics-table" class="statistics__report" hidden></div>
                   
                   <!-- <div class="statistics__table-wrapper">
                     <table class="statistics__table">
@@ -464,6 +473,8 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script src="./node_modules/chart.js/dist/chart.umd.js"></script>
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
     <script type="module" src="script.js" defer></script>
 </body>
 </html>
