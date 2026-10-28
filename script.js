@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let searchQuery = "";
     let sortState = {};
     let chart = null;
-    let chartCategpry = "";
+    let chartCategpry = document.getElementById("chart-category").value;
     let map = null;
 
     let isLoading = false;
@@ -632,6 +632,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         const [first, ...rest] = teacher.full_name.split(' ');
         const last = rest.join(' ');
         const initials = [first, last].map(p => p[0]).join('.');
+        const now = dayjs();
+        const t_b_date = teacher.b_date && dayjs(teacher.b_date);
+        let daysUntilBD = null;
+        let bdHtml = `<p class="teacher-profile__bd-info">No birthday information provided</p>`;
+
+        if (t_b_date) {
+          let nextBD = t_b_date.year(now.year());
+
+          if (nextBD.isBefore(now, 'day')) {
+            nextBD = nextBD.add(1, 'year');
+          }
+          daysUntilBD = nextBD.diff(now, 'day'); 
+
+          if (daysUntilBD === 0) {
+            bdHtml = `<p class="teacher-profile__bd-info">${teacher.full_name} birthday is today</p>`;
+          } else {
+            bdHtml = `<p class="teacher-profile__bd-info">It is <strong>${daysUntilBD}</strong> days left until birthday</p>`;
+          }
+
+        }
+        
 
         const demographics = [teacher.age, teacher.gender].filter(v => v != null && v !== "").join(", ") || "Age and gender unknown";
 
@@ -660,6 +681,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                   <p class="teacher-profile__demographics">${demographics}</p>
                   ${emailHtml}
                   <p class="teacher-profile__phone">${teacher.phone ?? "Unknown phone"}</p>
+                  ${bdHtml}
                 </div>
               </div>
               <div class="teacher-profile__about">
@@ -689,7 +711,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           if (mapElem.classList.contains("show-map")) {
             const {latitude, longitude} = teacher.coordinates;
             map = L.map(mapElem).setView([latitude, longitude], 13);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
             L.marker([latitude, longitude]).addTo(map);
           } else {
             map?.remove();

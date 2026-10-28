@@ -766,7 +766,7 @@ h2 {
   font-size: 1.1rem;
   color: #333;
 }
-.teacher-profile__location, .teacher-profile__demographics, .teacher-profile__phone {
+.teacher-profile__location, .teacher-profile__demographics, .teacher-profile__phone, .teacher-profile__bd-info {
   margin: 0;
   font-size: 0.85rem;
   color: #666;
