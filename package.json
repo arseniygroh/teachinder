@@ -8,6 +8,7 @@
   "main": "script.js",
   "dependencies": {
     "chalk": "^5.6.2",
+    "chart.js": "^4.6.1",
     "chokidar": "^5.0.0",
     "colorette": "^2.0.20",
     "dayjs": "^1.11.23",
@@ -17,6 +18,7 @@
     "http-status-emojis": "^2.2.0",
     "inflection": "^3.0.2",
     "json5": "^2.2.3",
+    "leaflet": "^1.9.4",
     "lowdb": "^7.0.1",
     "milliparsec": "^5.1.2",
     "mrmime": "^2.0.1",

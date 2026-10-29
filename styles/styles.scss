@@ -40,6 +40,9 @@ h2 {
     text-align: center;
     font-size: 2rem;
 }
+[hidden] {
+  display: none !important;
+}
 
 .navbar ul {
     display: flex;
@@ -276,9 +279,70 @@ h2 {
     padding-block: 2rem;
   
     &__container {
-        display: flex;
-        flex-direction: column;
-        row-gap: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      row-gap: 1.8rem;
+    }
+
+    &__views {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+  
+    &__chart-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+  
+    &__chart {
+      width: 100%;
+    }
+  
+    &__canvas {
+      position: relative;                    
+      width: 100%;
+      max-width: 640px;
+      height: clamp(320px, 70vw, 560px);
+      margin: 0 auto;
+    }
+  
+    &__empty {
+      padding: 3rem 0;
+      text-align: center;
+      color: #999;
+    }
+  
+    &__category {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+  
+      label {
+        color: #999;
+      }
+  
+      select {
+        padding: 0.35rem 0.5rem;
+        font: inherit;
+        color: #222;
+        background-color: #fff;
+        border: 1px solid $border;
+        cursor: pointer;
+      }
+    }
+  
+    &__report {
+      width: 100%;
+      min-height: 300px;
+      overflow-x: auto;
     }
 
     &__container::after {
@@ -286,80 +350,80 @@ h2 {
       margin-top: 2rem;
     }
   
-    &__table-wrapper {
-      overflow-x: auto;
-    }
+    // &__table-wrapper {
+    //   overflow-x: auto;
+    // }
   
-    &__table {
-      width: 100%;
-      min-width: 600px;
-      border-collapse: collapse;
-      font-size: 0.9rem;
+    // &__table {
+    //   width: 100%;
+    //   min-width: 600px;
+    //   border-collapse: collapse;
+    //   font-size: 0.9rem;
   
-      th,
-      td {
-        padding: 0.6rem 0.5rem;
-        text-align: center;
-      }
+    //   th,
+    //   td {
+    //     padding: 0.6rem 0.5rem;
+    //     text-align: center;
+    //   }
   
-      th:first-child,
-      td:first-child {
-        padding-left: 1.25rem;
-        text-align: left;
-      }
+    //   th:first-child,
+    //   td:first-child {
+    //     padding-left: 1.25rem;
+    //     text-align: left;
+    //   }
   
-      th {
-        border-bottom: 1px solid #555;
-        font-size: 1.1rem;
-        font-weight: normal;
+    //   th {
+    //     border-bottom: 1px solid #555;
+    //     font-size: 1.1rem;
+    //     font-weight: normal;
   
-        button {
-          padding: 0.6rem 1rem;
-          background: none;
-          border: 0;
-          cursor: pointer;
-        }
+    //     button {
+    //       padding: 0.6rem 1rem;
+    //       background: none;
+    //       border: 0;
+    //       cursor: pointer;
+    //     }
   
-        &[aria-sort="ascending"],
-        &[aria-sort="descending"] {
-          background-color: #f4f4f4;
-          border-bottom: 3px solid #333;
-        }
+    //     &[aria-sort="ascending"],
+    //     &[aria-sort="descending"] {
+    //       background-color: #f4f4f4;
+    //       border-bottom: 3px solid #333;
+    //     }
 
-        &[aria-sort="ascending"] button::after {
-          content: " \2193";
-          color: $link;
-        }
+    //     &[aria-sort="ascending"] button::after {
+    //       content: " \2193";
+    //       color: $link;
+    //     }
 
-        &[aria-sort="descending"] button::after {
-          content: " \2191";
-          color: $link;
-        }
-      }
+    //     &[aria-sort="descending"] button::after {
+    //       content: " \2191";
+    //       color: $link;
+    //     }
+    //   }
   
-      tbody tr:nth-child(even) {
-        background-color: #f7f5fa;
-      }
-    }
+    //   tbody tr:nth-child(even) {
+    //     background-color: #f7f5fa;
+    //   }
+    // }
   
-    &__pagination {
-      margin-top: 1.25rem;
-      padding-left: 1.5rem;
-      font-size: 0.9rem;
+    // &__pagination {
+    //   margin-top: 1.25rem;
+    //   padding-left: 1.5rem;
+    //   font-size: 0.9rem;
   
-      ul {
-        display: flex;
-        gap: 0.9rem;
-      }
+    //   ul {
+    //     display: flex;
+    //     gap: 0.9rem;
+    //   }
   
-      li {
-        color: $link;
-        cursor: pointer;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
+    //   li {
+    //     color: $link;
+    //     cursor: pointer;
+    //     &:hover {
+    //       text-decoration: underline;
+    //     }
+    //   }
+    // }
 }
 
 .teacher-card {
@@ -765,7 +829,8 @@ h2 {
 
     &__location,
     &__demographics,
-    &__phone {
+    &__phone,
+    &__bd-info {
         margin: 0;
         font-size: 0.85rem;
         color: #666;
@@ -799,4 +864,30 @@ h2 {
             text-decoration: underline;
         }
     }
+  
+    #map {
+      display: none;
+      opacity: 0;
+      height: 350px; 
+      margin-top: 1.5rem;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: opacity 0.3s ease-in-out;
+
+      &.show-map {
+        display: block;
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        height: 280px;
+        margin-top: 1.2rem;
+      }
+
+      @media (max-width: 467px) {
+        height: 220px;
+        margin-top: 1rem;
+        border-radius: 6px;
+      }
+  }
 }
